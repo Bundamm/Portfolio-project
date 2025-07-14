@@ -1,13 +1,18 @@
-﻿namespace PortfolioWebApp.Server.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PortfolioWebApp.Server.Models
 {
     public class Project
     {
         public int ProjectId { get; set; }
+        [Required]
+        [StringLength(255)]
         public string ProjectName { get; set; } = null!;
         public string? Description { get; set; }
 
-        public int Category { get; set; }
-        public Category? CategoryRef { get; set; }
+        [Required]
+        public int CategoryId { get; set; }
+        public Category? Category { get; set; }
 
         // FK for users
         public int? UserId { get; set; }

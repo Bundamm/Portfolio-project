@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PortfolioWebApp.Server.Models;
 using PortfolioWebApp.Server.Services;
 
 namespace PortfolioWebApp.Server.Controllers

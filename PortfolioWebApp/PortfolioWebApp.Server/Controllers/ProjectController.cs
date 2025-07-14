@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using PortfolioWebApp.Server.Services;
 
@@ -8,10 +9,12 @@ using PortfolioWebApp.Server.Services;
 public class ProjectsController : ControllerBase
 {
     private readonly ProjectService _projectService;
+    private readonly PortfolioWebAppContext _context;
 
-    public ProjectsController(ProjectService projectService)
+    public ProjectsController(ProjectService projectService, PortfolioWebAppContext portfolioContext)
     {
         _projectService = projectService;
+        _context = portfolioContext;
     }
 
     [HttpGet]

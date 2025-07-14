@@ -1,9 +1,16 @@
-﻿namespace PortfolioWebApp.Server.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PortfolioWebApp.Server.Models
 {
     public class Image
     {
-        public int ImageID { get; set; }
-        public int ProjectID { get;set; }
+        public int ImageId { get; set; }
+        
+        public int ProjectId { get;set; }
+        [Required]
+        [MaxLength(255)]
         public string ImagePath { get; set; } = null!;
 
         public Project? Project { get; set; }

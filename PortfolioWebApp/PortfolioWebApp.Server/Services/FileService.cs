@@ -10,10 +10,10 @@ namespace PortfolioWebApp.Server.Services
     public class FileService
     {
 
-        private readonly AppDbContext _context;
+        private readonly PortfolioWebAppContext _context;
         private readonly IWebHostEnvironment _env;
 
-        public FileService(AppDbContext context, IWebHostEnvironment env)
+        public FileService(PortfolioWebAppContext context, IWebHostEnvironment env)
         {
             _context = context;
             _env = env;
@@ -21,7 +21,7 @@ namespace PortfolioWebApp.Server.Services
 
         public async Task<Image> UploadImageAsync(IFormFile file,int projectid)
         {
-            if(file == null ||file.Length ==0)
+            if(file is null ||file.Length ==0)
                 throw new ArgumentException("Incorrect File ");
 
             var uploadFolders = Path.Combine(_env.WebRootPath, "upload/images");
@@ -46,7 +46,7 @@ namespace PortfolioWebApp.Server.Services
 
         public async Task<Pdf> UploadPdfAsync(IFormFile file, int projectId)
         {
-            if (file == null || file.Length == 0)
+            if (file is null || file.Length == 0)
                 throw new ArgumentException("Nieprawidłowy plik.");
 
             var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads/pdfs");
