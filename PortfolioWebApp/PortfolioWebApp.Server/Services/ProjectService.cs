@@ -2,87 +2,85 @@
 using Npgsql.PostgresTypes;
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
-using PortfolioWebApp.Server.Models.Repositories;
+using PortfolioWebApp.Server.Repositories;
 
-public class ProjectService
+namespace PortfolioWebApp.Server.Services
 {
-    private readonly PortfolioWebAppContext _context;
-
-    public ProjectService(PortfolioWebAppContext context, IProjectRepository projectRepository, IUserRepository userRepository)
+    public class ProjectService
     {
-        _context = context;
-    }
+        private readonly PortfolioWebAppContext _context;
 
-    public async Task<Project> CreateProjectAsync(string projectName, string? description, int categoryId, int userId)
-    {
-        User? user = await _context.Users.FindAsync(userId);
-        if(user is null || (user.Role is not "admin" && user.Role is not "root"))
+        public ProjectService(PortfolioWebAppContext context, ProjectRepository projectRepository, UserRepository userRepository)
         {
-            throw new AccessViolationException("You do not have permission to create a new project.");
+            _context = context;
         }
-        Project project = new Project { ProjectName = projectName, Description = description, CategoryId = categoryId };
 
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync();
-        return project;
+        public async Task<Project> CreateProjectAsync(string projectName, string? description, int categoryId, int userId)
+        {
+            User? user = await _context.Users.FindAsync(userId);
+            if (user is null || (user.Role is not "admin" && user.Role is not "root"))
+            {
+                throw new AccessViolationException("You do not have permission to create a new project.");
+            }
+            Project project = new Project { ProjectName = projectName, Description = description, CategoryId = categoryId };
+
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
+            return project;
+        }
+
+        public async Task<Project?> DeleteProjectAsync(int projectId, int userId)   //or Task<Bool> if only want to know if deleted
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user is null || (user.Role != "admin" && user.Role != "root"))
+                throw new AccessViolationException("You do not have permission.");
+
+            var project = await _context.Projects.FindAsync(projectId);
+            if (project is null)
+                return null;
+
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
+            return project;
+        }
+
+
+
+        public async Task<List<Project>> GetAllAsync()
+        {
+            return await _context.Projects
+                .Include(p => p.Category)
+                .Include(p => p.User)
+                .Include(p => p.Images)
+                .Include(p => p.Pdfs)
+                .OrderByDescending(p => p.ProjectId)
+                .ToListAsync();
+        }
+
+        public async Task<Project?> GetByIdAsync(int id)
+        {
+            return await _context.Projects
+                .Include(p => p.Category)
+                .Include(p => p.User)
+                .Include(p => p.Images)
+                .Include(p => p.Pdfs)
+                .FirstOrDefaultAsync(p => p.ProjectId == id);
+        }
+
+        public async Task<Project?> UpdateAsync(int id, Project updated)
+        {
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
+                return null;
+
+            project.ProjectName = updated.ProjectName;
+            project.Description = updated.Description;
+            project.CategoryId = updated.CategoryId;
+            project.UserId = updated.UserId;
+
+            await _context.SaveChangesAsync();
+            return project;
+        }
     }
-    
 
-    //public async Task<List<Project>> GetAllAsync()
-    //{
-    //    return await _context.Projects
-    //        .Include(p => p.CategoryRef)
-    //        .Include(p => p.User)
-    //        .Include(p => p.Images)
-    //        .Include(p => p.Pdfs)
-    //        .OrderByDescending(p => p.ProjectId)
-    //        .ToListAsync();
-    //}
-
-    //public async Task<Project?> GetByIdAsync(int id)
-    //{
-    //    return await _context.Projects
-    //        .Include(p => p.CategoryRef)
-    //        .Include(p => p.User)
-    //        .Include(p => p.Images)
-    //        .Include(p => p.Pdfs)
-    //        .FirstOrDefaultAsync(p => p.ProjectId == id);
-    //}
-
-    //public async Task<Project> CreateAsync(Project project)
-    //{
-    //    _context.Projects.Add(project);
-    //    await _context.SaveChangesAsync();
-    //    return project;
-    //}
-
-    //public async Task<bool> DeleteAsync(int id)
-    //{
-    //    var project = await _context.Projects
-    //        .Include(p => p.Images)
-    //        .Include(p => p.Pdfs)
-    //        .FirstOrDefaultAsync(p => p.ProjectId == id);
-
-    //    if (project == null)
-    //        return false;
-
-    //    _context.Projects.Remove(project);
-    //    await _context.SaveChangesAsync();
-    //    return true;
-    //}
-
-    //public async Task<Project?> UpdateAsync(int id, Project updated)
-    //{
-    //    var project = await _context.Projects.FindAsync(id);
-    //    if (project == null)
-    //        return null;
-
-    //    project.ProjectName = updated.ProjectName;
-    //    project.Description = updated.Description;
-    //    project.Category = updated.Category;
-    //    project.UserId = updated.UserId;
-
-    //    await _context.SaveChangesAsync();
-    //    return project;
-    //}
 }

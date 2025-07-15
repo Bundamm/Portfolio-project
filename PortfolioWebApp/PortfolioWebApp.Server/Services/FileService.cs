@@ -19,23 +19,15 @@ namespace PortfolioWebApp.Server.Services
             _env = env;
         }
 
-        public async Task<Image> UploadImageAsync(IFormFile file,int projectid)
+        public async Task<Image> UploadImageAsync(string filePath, int projectId)
         {
-            if(file is null ||file.Length ==0)
-                throw new ArgumentException("Incorrect File ");
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+                throw new ArgumentException("Invalid file path");
 
-            var uploadFolders = Path.Combine(_env.WebRootPath, "upload/images");
-            Directory.CreateDirectory(uploadFolders);
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadFolders, fileName);
-
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(stream);
-
+            var fileName = Path.GetFileName(filePath);
             var image = new Image
             {
-                ProjectID = projectid,
+                ProjectId = projectId,
                 ImagePath = $"/uploads/images/{fileName}"
             };
 
@@ -44,30 +36,21 @@ namespace PortfolioWebApp.Server.Services
             return image;
         }
 
-        public async Task<Pdf> UploadPdfAsync(IFormFile file, int projectId)
+        public async Task<Pdf> UploadPdfAsync(string filePath, int projectId)
         {
-            if (file is null || file.Length == 0)
-                throw new ArgumentException("Nieprawidłowy plik.");
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+                throw new ArgumentException("Invalid file path");
 
-            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads/pdfs");
-            Directory.CreateDirectory(uploadsFolder);
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(stream);
-
+            var fileName = Path.GetFileName(filePath);
             var pdf = new Pdf
             {
                 ProjectId = projectId,
-                PdfName = file.FileName,
+                PdfName = fileName,
                 PdfPath = $"/uploads/pdfs/{fileName}"
             };
 
             _context.Pdfs.Add(pdf);
             await _context.SaveChangesAsync();
-
             return pdf;
         }
 
