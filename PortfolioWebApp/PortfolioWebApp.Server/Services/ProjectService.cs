@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Npgsql.PostgresTypes;
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using PortfolioWebApp.Server.Repositories;
+using System.ComponentModel;
 
 namespace PortfolioWebApp.Server.Services
 {
@@ -15,13 +17,8 @@ namespace PortfolioWebApp.Server.Services
             _context = context;
         }
 
-        public async Task<Project> CreateProjectAsync(string projectName, string? description, int categoryId, int userId)
+        public async Task<Project> CreateProjectAsync(string projectName, string? description, int categoryId)
         {
-            User? user = await _context.Users.FindAsync(userId);
-            if (user is null || (user.Role is not "admin" && user.Role is not "root"))
-            {
-                throw new AccessViolationException("You do not have permission to create a new project.");
-            }
             Project project = new Project { ProjectName = projectName, Description = description, CategoryId = categoryId };
 
             _context.Projects.Add(project);
@@ -29,21 +26,17 @@ namespace PortfolioWebApp.Server.Services
             return project;
         }
 
-        public async Task<Project?> DeleteProjectAsync(int projectId, int userId)   //or Task<Bool> if only want to know if deleted
+        public async Task<Project?> DeleteProjectAsync(int projectId)   //or Task<Bool> if only want to know if deleted
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user is null || (user.Role != "admin" && user.Role != "root"))
-                throw new AccessViolationException("You do not have permission.");
-
             var project = await _context.Projects.FindAsync(projectId);
             if (project is null)
-                return null;
+                throw new ArgumentNullException(nameof(project));
 
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
             return project;
-        }
 
+        }
 
 
         public async Task<List<Project>> GetAllAsync()

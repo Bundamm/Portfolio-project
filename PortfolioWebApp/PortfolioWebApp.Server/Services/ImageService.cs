@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 
@@ -10,9 +11,37 @@ public class ImageService
         if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
             throw new ArgumentException("Invalid file path");
         var fileName = Path.GetFileName(filePath);
+        // Path to be determined when we're done with other stuff
         var image = new Image { ProjectId = projectId, ImagePath = $"/uploads/images/{fileName}" };
         _context.Images.Add(image);
         await _context.SaveChangesAsync();
         return image;
     }
+
+    public async Task<Image?> GetFileByIdAsync(int id)
+    {
+        return await _context.Images
+            .Include(p => p.Project)
+            .FirstOrDefaultAsync(p => p.ImageId == id);
+    }
+
+    public async Task<List<Image>> GetAllImagesByIdAsync(int id)
+    {
+        return await _context.Images
+            .Include(p => p.Project)
+            .OrderByDescending(p => p.ImageId)
+            .ToListAsync();
+    }
+
+    public async Task<Image?> DeleteImageById(int id)
+    {
+        var image = await _context.Images.FindAsync(id);
+        if (image is null)
+            throw new ArgumentNullException(nameof(image));
+        _context.Images.Remove(image);
+        await _context.SaveChangesAsync();
+        return image;
+    }
+
+
 } 

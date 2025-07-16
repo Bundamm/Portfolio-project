@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 
@@ -15,4 +16,31 @@ public class PdfService
         await _context.SaveChangesAsync();
         return pdf;
     }
+
+    public async Task<Pdf?> GetPdfByIdAsync(int id)
+    {
+        return await _context.Pdfs
+            .Include(p => p.Project)
+            .FirstOrDefaultAsync(p => p.PdfId == id);
+    }
+
+    public async Task<List<Pdf>> GetAllPdfsByIdAsync(int id)
+    {
+        return await _context.Pdfs
+            .Include(p => p.Project)
+            .OrderByDescending(p => p.PdfId)
+            .ToListAsync();
+    }
+
+    public async Task<Pdf?> DeletePdfById(int id)
+    {
+        var pdf = await _context.Pdfs.FindAsync(id);
+        if (pdf is null)
+            throw new ArgumentNullException(nameof(pdf));
+        _context.Pdfs.Remove(pdf);
+        await _context.SaveChangesAsync();
+        return pdf;
+    }
+
+
 } 

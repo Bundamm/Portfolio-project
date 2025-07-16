@@ -18,6 +18,7 @@ public class ProjectsController : ControllerBase
         _context = portfolioContext;
     }
 
+    [Authorize(Roles = "admin,root")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -26,6 +27,7 @@ public class ProjectsController : ControllerBase
         return Ok(dtos);
     }
 
+    [Authorize(Roles = "admin,root")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -35,13 +37,13 @@ public class ProjectsController : ControllerBase
         return Ok(MapToDto(project));
     }
 
-    [HttpPost("create")]
     [Authorize(Roles = "admin,root")]
+    [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] ProjectDto dto)
     {
         try
         {
-            var created = await _projectService.CreateProjectAsync(dto.Name, dto.Description, dto.CategoryId, dto.UserId);
+            var created = await _projectService.CreateProjectAsync(dto.Name, dto.Description, dto.CategoryId);
             return CreatedAtAction(nameof(GetById), new { id = created.ProjectId }, MapToDto(created));
         }
         catch (AccessViolationException ex)
@@ -50,8 +52,8 @@ public class ProjectsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "admin,root")]
     [HttpPut("{id}")]
-    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Update(int id, [FromBody] ProjectDto dto)
     {
         var updatedProject = new Project
@@ -67,13 +69,13 @@ public class ProjectsController : ControllerBase
         return Ok(MapToDto(result));
     }
 
-    [HttpDelete("delete/{id}")]
     [Authorize(Roles = "admin,root")]
+    [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id, [FromQuery] int userId)
     {
         try
         {
-            var deleted = await _projectService.DeleteProjectAsync(id, userId);
+            var deleted = await _projectService.DeleteProjectAsync(id);
             if (deleted is null)
                 return NotFound();
             return Ok(deleted);
