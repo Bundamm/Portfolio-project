@@ -7,11 +7,11 @@ namespace PortfolioWebApp.Server.Data
     {
         public PortfolioWebAppContext(DbContextOptions<PortfolioWebAppContext> options) : base(options) { }
 
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<Image> Images { get; set; }
-        public DbSet<Pdf> Pdfs { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Project> projects { get; set; }
+        public DbSet<Image> images { get; set; }
+        public DbSet<Pdf> pdfs { get; set; }
+        public DbSet<User> users { get; set; }
+        public DbSet<Category> categories { get; set; }
     }
 
 }

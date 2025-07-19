@@ -12,10 +12,10 @@ namespace PortfolioWebApp.Server.Repositories
             _context = context;
         }
 
-        public IEnumerable<Category> GetAll() => _context.Categories.Include(c => c.Projects).ToList();
-        public Category? GetById(int id) => _context.Categories.Include(c => c.Projects).FirstOrDefault(c => c.CategoryId == id);
-        public void Add(Category category) { _context.Categories.Add(category); _context.SaveChanges(); }
-        public void Update(Category category) { _context.Categories.Update(category); _context.SaveChanges(); }
-        public void Delete(int id) { var category = _context.Categories.Find(id); if (category != null) { _context.Categories.Remove(category); _context.SaveChanges(); } }
+        public IEnumerable<Category> GetAll() => _context.categories.Include(c => c.Projects).ToList();
+        public Category? GetById(int id) => _context.categories.Include(c => c.Projects).FirstOrDefault(c => c.CategoryId == id);
+        public void Add(Category category) { _context.categories.Add(category); _context.SaveChanges(); }
+        public void Update(Category category) { _context.categories.Update(category); _context.SaveChanges(); }
+        public void Delete(int id) { var category = _context.categories.Find(id); if (category != null) { _context.categories.Remove(category); _context.SaveChanges(); } }
     }
 }

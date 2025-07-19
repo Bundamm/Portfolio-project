@@ -21,18 +21,18 @@ namespace PortfolioWebApp.Server.Services
         {
             Project project = new Project { ProjectName = projectName, Description = description, CategoryId = categoryId };
 
-            _context.Projects.Add(project);
+            _context.projects.Add(project);
             await _context.SaveChangesAsync();
             return project;
         }
 
         public async Task<Project?> DeleteProjectAsync(int projectId)   //or Task<Bool> if only want to know if deleted
         {
-            var project = await _context.Projects.FindAsync(projectId);
+            var project = await _context.projects.FindAsync(projectId);
             if (project is null)
                 throw new ArgumentNullException(nameof(project));
 
-            _context.Projects.Remove(project);
+            _context.projects.Remove(project);
             await _context.SaveChangesAsync();
             return project;
 
@@ -41,7 +41,7 @@ namespace PortfolioWebApp.Server.Services
 
         public async Task<List<Project>> GetAllAsync()
         {
-            return await _context.Projects
+            return await _context.projects
                 .Include(p => p.Category)
                 .Include(p => p.User)
                 .Include(p => p.Images)
@@ -52,7 +52,7 @@ namespace PortfolioWebApp.Server.Services
 
         public async Task<Project?> GetByIdAsync(int id)
         {
-            return await _context.Projects
+            return await _context.projects
                 .Include(p => p.Category)
                 .Include(p => p.User)
                 .Include(p => p.Images)
@@ -62,7 +62,7 @@ namespace PortfolioWebApp.Server.Services
 
         public async Task<Project?> UpdateAsync(int id, Project updated)
         {
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.projects.FindAsync(id);
             if (project == null)
                 return null;
 

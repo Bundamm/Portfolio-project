@@ -14,7 +14,6 @@ public class ImageController : ControllerBase
     }
 
     [HttpPost("upload")]
-    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Upload([FromForm] string filePath, [FromForm] int projectId)
     {
         var image = await _imageService.UploadImageAsync(filePath, projectId);

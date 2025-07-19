@@ -18,7 +18,6 @@ public class ProjectsController : ControllerBase
         _context = portfolioContext;
     }
 
-    [Authorize(Roles = "admin,root")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -27,7 +26,6 @@ public class ProjectsController : ControllerBase
         return Ok(dtos);
     }
 
-    [Authorize(Roles = "admin,root")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -37,7 +35,6 @@ public class ProjectsController : ControllerBase
         return Ok(MapToDto(project));
     }
 
-    [Authorize(Roles = "admin,root")]
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] ProjectDto dto)
     {
@@ -52,7 +49,6 @@ public class ProjectsController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "admin,root")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] ProjectDto dto)
     {
@@ -69,7 +65,6 @@ public class ProjectsController : ControllerBase
         return Ok(MapToDto(result));
     }
 
-    [Authorize(Roles = "admin,root")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id, [FromQuery] int userId)
     {

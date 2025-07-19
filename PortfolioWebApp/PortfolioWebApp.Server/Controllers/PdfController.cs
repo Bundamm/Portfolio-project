@@ -14,7 +14,6 @@ public class PdfController : ControllerBase
     }
 
     [HttpPost("upload")]
-    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Upload([FromForm] string filePath, [FromForm] int projectId)
     {
         var pdf = await _pdfService.UploadPdfAsync(filePath, projectId);

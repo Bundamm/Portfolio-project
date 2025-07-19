@@ -12,21 +12,21 @@ public class PdfService
             throw new ArgumentException("Invalid file path");
         var fileName = Path.GetFileName(filePath);
         var pdf = new Pdf { ProjectId = projectId, PdfName = fileName, PdfPath = $"/uploads/pdfs/{fileName}" };
-        _context.Pdfs.Add(pdf);
+        _context.pdfs.Add(pdf);
         await _context.SaveChangesAsync();
         return pdf;
     }
 
     public async Task<Pdf?> GetPdfByIdAsync(int id)
     {
-        return await _context.Pdfs
+        return await _context.pdfs
             .Include(p => p.Project)
             .FirstOrDefaultAsync(p => p.PdfId == id);
     }
 
     public async Task<List<Pdf>> GetAllPdfsByIdAsync(int id)
     {
-        return await _context.Pdfs
+        return await _context.pdfs
             .Include(p => p.Project)
             .OrderByDescending(p => p.PdfId)
             .ToListAsync();
@@ -34,10 +34,10 @@ public class PdfService
 
     public async Task<Pdf?> DeletePdfById(int id)
     {
-        var pdf = await _context.Pdfs.FindAsync(id);
+        var pdf = await _context.pdfs.FindAsync(id);
         if (pdf is null)
             throw new ArgumentNullException(nameof(pdf));
-        _context.Pdfs.Remove(pdf);
+        _context.pdfs.Remove(pdf);
         await _context.SaveChangesAsync();
         return pdf;
     }
