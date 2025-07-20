@@ -16,6 +16,22 @@ public class PdfController : ControllerBase
     [HttpPost("upload")]
     public async Task<IActionResult> Upload([FromForm] string filePath, [FromForm] int projectId)
     {
+        if (string.IsNullOrWhiteSpace(filePath))
+        { 
+            return BadRequest("File path is empty."); 
+        }
+
+        var fileName = Path.GetFileName(filePath);
+        var uploadPath = Path.Combine("uploads", "pdfs", fileName);
+
+        if (!System.IO.File.Exists(filePath))
+        {
+            return BadRequest("File does not exist at the specified path.");
+        }
+        if (System.IO.File.Exists(uploadPath))
+        { 
+                return Conflict("A file with the same name already exists in the uploads/pdfs directory."); }
+
         var pdf = await _pdfService.UploadPdfAsync(filePath, projectId);
         return Ok(MapToDto(pdf));
     }
