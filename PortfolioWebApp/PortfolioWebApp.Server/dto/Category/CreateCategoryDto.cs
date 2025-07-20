@@ -1,8 +1,7 @@
-namespace PortfolioWebApp.Server.DTO;
+namespace PortfolioWebApp.Server.DTO.Category;
 
-public class CategoryDto
+public class CreateCategoryDto
 {
-    public int CategoryId { get; set; }
     public string CategoryName { get; set; } = null!;
     public string? Description { get; set; }
 }

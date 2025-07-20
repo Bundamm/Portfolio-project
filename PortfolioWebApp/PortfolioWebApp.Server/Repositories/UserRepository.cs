@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortfolioWebApp.Server.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly PortfolioWebAppContext _context;
         public UserRepository(PortfolioWebAppContext context)

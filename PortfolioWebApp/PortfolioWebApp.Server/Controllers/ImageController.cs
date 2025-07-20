@@ -1,32 +1,65 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PortfolioWebApp.Server.DTO;
-using PortfolioWebApp.Server.Models;
+using PortfolioWebApp.Server.DTO.Image;
+using PortfolioWebApp.Server.Mappers;
+using PortfolioWebApp.Server.Repositories;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/image")]
 public class ImageController : ControllerBase
 {
-    private readonly ImageService _imageService;
-    public ImageController(ImageService imageService)
+    private readonly ImageRepository _imageRepo;
+    public ImageController(ImageRepository imageRepository)
     {
-        _imageService = imageService;
+        _imageRepo = imageRepository;
     }
 
-    [HttpPost("upload")]
-    public async Task<IActionResult> Upload([FromForm] string filePath, [FromForm] int projectId)
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-        var image = await _imageService.UploadImageAsync(filePath, projectId);
-        return Ok(MapToDto(image));
+        var images = await _imageRepo.GetAllAsync();
+        var imageDto = images.Select(i => i.ToImageDto());
+        return Ok(images);
     }
-
-    private static ImageDto MapToDto(Image image)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        return new ImageDto
+        var image = await _imageRepo.GetByIdAsync(id);
+        if (image == null)
         {
-            Id = image.ImageId,
-            Path = image.ImagePath,
-            ProjectId = image.ProjectId
-        };
+            return NotFound();
+        }
+        return Ok(image.ToImageDto());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateImageDto imageDto)
+    {
+        var imageModel = imageDto.ToImageFromCreateImageDto();
+        await _imageRepo.CreateAsync(imageModel);
+        return CreatedAtAction(nameof(GetById), new { id = imageModel.ImageId }, imageModel.ToImageDto());
+    }
+
+    [HttpPut]
+    [Route("{id}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody]  UpdateImageDto imageDto)
+    {
+        var imageModel = await _imageRepo.UpdateAsync(id, imageDto);
+        if(imageModel == null)
+        {
+            return NotFound();
+        }
+        return Ok(imageModel.ToImageDto());
+    }
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var imageModel = await _imageRepo.DeleteAsync(id);
+
+        if (imageModel == null)
+        {
+            return NotFound();
+        }
+        return NoContent();
     }
 } 

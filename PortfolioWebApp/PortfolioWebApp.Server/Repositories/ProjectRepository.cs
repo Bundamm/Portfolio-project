@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortfolioWebApp.Server.Repositories
 {
-    public class ProjectRepository
+    public class ProjectRepository : IProjectRepository
     {
         private readonly PortfolioWebAppContext _context;
         public ProjectRepository(PortfolioWebAppContext context)

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortfolioWebApp.Server.Repositories
 {
-    public class PdfRepository
+    public class PdfRepository : IPdfRepository
     {
         private readonly PortfolioWebAppContext _context;
         public PdfRepository(PortfolioWebAppContext context)

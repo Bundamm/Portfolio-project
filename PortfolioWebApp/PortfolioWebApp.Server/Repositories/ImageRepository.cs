@@ -1,20 +1,70 @@
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using PortfolioWebApp.Server.DTO.Image;
+
 
 namespace PortfolioWebApp.Server.Repositories
 {
-    public class ImageRepository
+    public class ImageRepository : IImageRepository
     {
         private readonly PortfolioWebAppContext _context;
+
         public ImageRepository(PortfolioWebAppContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<Image> GetAll() => _context.images.Include(i => i.Project).ToList();
-        public Image? GetById(int id) => _context.images.Include(i => i.Project).FirstOrDefault(i => i.ImageId == id);
-        public void Add(Image image) { _context.images.Add(image); _context.SaveChanges(); }
-        public void Delete(int id) { var image = _context.images.Find(id); if (image != null) { _context.images.Remove(image); _context.SaveChanges(); } }
+        public async Task<Image> CreateAsync(Image imageModel)
+        {
+            var project = await _context.projects.FindAsync(imageModel.ProjectId);
+            if (project == null)
+            {
+                throw new Exception("The project by the id in the model doesnt exist.");
+            }
+            imageModel.Project = project;
+            await _context.images.AddAsync(imageModel);
+            await _context.SaveChangesAsync();
+            return imageModel;
+        }
+
+        public async Task<Image?> DeleteAsync(int id)
+        {
+            var imageModel = await _context.images.FirstOrDefaultAsync(x => x.ImageId == id);
+            if (imageModel == null)
+            {
+                return null;
+            }
+            _context.images.Remove(imageModel);
+            await _context.SaveChangesAsync();
+            return imageModel;
+        }
+
+        public async Task<IEnumerable<Image>> GetAllAsync()
+        {
+            return await _context.images.ToListAsync();
+        }
+
+        public async Task<Image?> GetByIdAsync(int id)
+        {
+            return await _context.images.FindAsync(id);
+        }
+
+        public async Task<Image?> UpdateAsync(int id, UpdateImageDto imageDto)
+        {
+            var existingImage = await _context.images.FirstOrDefaultAsync(x => x.ImageId == id);
+            if (existingImage == null)
+            {
+                return null;
+            }
+            existingImage.ProjectId = imageDto.ProjectId;
+            existingImage.ImagePath = imageDto.Path;
+            existingImage.Project = await _context.projects
+                .FirstOrDefaultAsync(x => x.ProjectId == imageDto.ProjectId);
+            await _context.SaveChangesAsync();
+            return existingImage;
+
+
+        }
     }
 } 
