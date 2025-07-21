@@ -2,6 +2,7 @@ using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using PortfolioWebApp.Server.DTO.Image;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace PortfolioWebApp.Server.Repositories
@@ -17,12 +18,7 @@ namespace PortfolioWebApp.Server.Repositories
 
         public async Task<Image> CreateAsync(Image imageModel)
         {
-            var project = await _context.projects.FindAsync(imageModel.ProjectId);
-            if (project == null)
-            {
-                throw new Exception("The project by the id in the model doesnt exist.");
-            }
-            imageModel.Project = project;
+
             await _context.images.AddAsync(imageModel);
             await _context.SaveChangesAsync();
             return imageModel;
@@ -50,17 +46,14 @@ namespace PortfolioWebApp.Server.Repositories
             return await _context.images.FindAsync(id);
         }
 
-        public async Task<Image?> UpdateAsync(int id, UpdateImageDto imageDto)
+        public async Task<Image?> UpdateAsync(int id, Image imageModel)
         {
             var existingImage = await _context.images.FirstOrDefaultAsync(x => x.ImageId == id);
             if (existingImage == null)
             {
                 return null;
             }
-            existingImage.ProjectId = imageDto.ProjectId;
-            existingImage.ImagePath = imageDto.Path;
-            existingImage.Project = await _context.projects
-                .FirstOrDefaultAsync(x => x.ProjectId == imageDto.ProjectId);
+            existingImage.ImagePath = imageModel.ImagePath;
             await _context.SaveChangesAsync();
             return existingImage;
 

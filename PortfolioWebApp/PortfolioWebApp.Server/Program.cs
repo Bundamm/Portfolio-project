@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Repositories;
-using PortfolioWebApp.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

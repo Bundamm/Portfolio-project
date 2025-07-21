@@ -8,7 +8,7 @@ namespace PortfolioWebApp.Server.Repositories
         Task<IEnumerable<Image>> GetAllAsync();
         Task<Image?> GetByIdAsync(int id);
         Task<Image> CreateAsync(Image imageModel);
-        Task<Image?> UpdateAsync(int id, UpdateImageDto imageDto);
+        Task<Image?> UpdateAsync(int id, Image imageModel);
         Task<Image?> DeleteAsync(int id);
     }
 }

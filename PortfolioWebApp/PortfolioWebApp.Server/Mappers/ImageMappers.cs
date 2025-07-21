@@ -1,7 +1,7 @@
 using PortfolioWebApp.Server.Models;
 using PortfolioWebApp.Server.DTO.Image;
 using PortfolioWebApp.Server.DTO;
-using PortfolioWebApp.Server.Data;
+
 
 namespace PortfolioWebApp.Server.Mappers
 {
@@ -16,13 +16,20 @@ namespace PortfolioWebApp.Server.Mappers
                 ProjectId = imageModel.ProjectId
             };
         }
-        public static Image ToImageFromCreateImageDto(this CreateImageDto imageDto)
+        public static Image ToImageFromCreateImageDto(this CreateImageDto imageDto, int projectId)
         {
             return new Image
             {
-                ProjectId = imageDto.ProjectId,
                 ImagePath = imageDto.Path,
-                Project = null
+                ProjectId = projectId
+            };
+        }
+
+        public static Image ToImageFromUpdateImageDto(this UpdateImageDto imageDto)
+        {
+            return new Image
+            {
+                ImagePath = imageDto.Path
             };
         }
     }

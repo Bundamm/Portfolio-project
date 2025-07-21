@@ -15,11 +15,11 @@
             public Category? Category { get; set; }
 
             // FK for users
-            public int? UserId { get; set; }
+            public int UserId { get; set; }
             public User? User { get; set; }
 
-            public ICollection<Image> Images { get; set; } = new List<Image>();
-            public ICollection<Pdf> Pdfs { get; set; } = new List<Pdf>();
+            public List<Image> Images { get; set; } = new List<Image>();
+            public List<Pdf> Pdfs { get; set; } = new List<Pdf>();
         }
 
     }

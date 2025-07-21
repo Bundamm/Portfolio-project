@@ -8,9 +8,11 @@ using PortfolioWebApp.Server.Repositories;
 public class ImageController : ControllerBase
 {
     private readonly ImageRepository _imageRepo;
-    public ImageController(ImageRepository imageRepository)
+    private readonly ProjectRepository _projectRepo;
+    public ImageController(ImageRepository imageRepository, ProjectRepository projectRepo)
     {
         _imageRepo = imageRepository;
+        _projectRepo = projectRepo;
     }
 
     [HttpGet]
@@ -31,10 +33,14 @@ public class ImageController : ControllerBase
         return Ok(image.ToImageDto());
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateImageDto imageDto)
+    [HttpPost("{projectId}")]
+    public async Task<IActionResult> Create([FromRoute] int projectId, [FromBody] CreateImageDto imageDto)
     {
-        var imageModel = imageDto.ToImageFromCreateImageDto();
+        if (!await _projectRepo.ProjectExists(projectId)) 
+        {
+            return NotFound("Image does not exist.");
+        }
+        var imageModel = imageDto.ToImageFromCreateImageDto(projectId);
         await _imageRepo.CreateAsync(imageModel);
         return CreatedAtAction(nameof(GetById), new { id = imageModel.ImageId }, imageModel.ToImageDto());
     }
@@ -43,10 +49,10 @@ public class ImageController : ControllerBase
     [Route("{id}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody]  UpdateImageDto imageDto)
     {
-        var imageModel = await _imageRepo.UpdateAsync(id, imageDto);
+        var imageModel = await _imageRepo.UpdateAsync(id, imageDto.ToImageFromUpdateImageDto());
         if(imageModel == null)
         {
-            return NotFound();
+            return NotFound("Image not found.");
         }
         return Ok(imageModel.ToImageDto());
     }
@@ -58,7 +64,7 @@ public class ImageController : ControllerBase
 
         if (imageModel == null)
         {
-            return NotFound();
+            return NotFound("Image not found.");
         }
         return NoContent();
     }

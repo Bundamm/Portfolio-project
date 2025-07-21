@@ -7,6 +7,6 @@ public class ProjectDto
     public string? Description { get; set; }
     public int CategoryId { get; set; }
     public int UserId { get; set; }
-    public List<int> ImageIds { get; set; } = new List<int>();
-    public List<int> PdfIds { get; set; } = new List<int>();
+    public List<ImageDto> Images { get; set; } 
+    public List<PdfDto> Pdfs { get; set; } 
 }
