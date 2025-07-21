@@ -44,7 +44,6 @@
     <Folder Include="DTO\User\" />
     <Folder Include="DTO\Project\" />
     <Folder Include="DTO\Pdf\" />
-    <Folder Include="Mappers\" />
     <Folder Include="Nowy folder\" />
   </ItemGroup>
 

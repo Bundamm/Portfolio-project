@@ -1,33 +1,80 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PortfolioWebApp.Server.DTO;
+using PortfolioWebApp.Server.DTO.Pdf;
+using PortfolioWebApp.Server.Mappers;
 using PortfolioWebApp.Server.Models;
+using PortfolioWebApp.Server.Repositories;
 
 [ApiController]
 [Route("api/[controller]")]
 public class PdfController : ControllerBase
 {
-    private readonly PdfService _pdfService;
-    public PdfController(PdfService pdfService)
+    private readonly PdfRepository _pdfRepo;
+    private readonly ProjectRepository _projectRepo;
+
+    public PdfController(PdfRepository pdfRepository, ProjectRepository projectRepository)
     {
-        _pdfService = pdfService;
+        _pdfRepo = pdfRepository;
+        _projectRepo = projectRepository;
     }
 
-    [HttpPost("upload")]
-    public async Task<IActionResult> Upload([FromForm] string filePath, [FromForm] int projectId)
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-        var pdf = await _pdfService.UploadPdfAsync(filePath, projectId);
-        return Ok(MapToDto(pdf));
+        var pdfs = await _pdfRepo.GetAllAsync();
+        var pdfDtos = pdfs.Select(p => p.ToPdfDto());
+        return Ok(pdfDtos);
     }
 
-    private static PdfDto MapToDto(Pdf pdf)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        return new PdfDto
+        var pdf = await _pdfRepo.GetByIdAsync(id);
+        if (pdf == null)
         {
-            Id = pdf.PdfId,
-            ProjectId = pdf.ProjectId,
-            Name = pdf.PdfName,
-            Path = pdf.PdfPath
-        };
+            return NotFound();
+        }
+        return Ok(pdf.ToPdfDto());
     }
-} 
+
+    [HttpPost("{projectId}")]
+    public async Task<IActionResult> Create([FromRoute] int projectId, [FromBody] CreatePdfDto pdfDto)
+    {
+        if (!await _projectRepo.ProjectExists(projectId))
+        {
+            return NotFound("Project does not exist.");
+        }
+
+        var pdfModel = new Pdf
+        {
+            PdfPath = pdfDto.Path,
+            ProjectId = projectId
+        };
+
+        await _pdfRepo.CreateAsync(pdfModel);
+        return CreatedAtAction(nameof(GetById), new { id = pdfModel.PdfId }, pdfModel.ToPdfDto());
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdatePdfDto pdfDto)
+    {
+        var updated = await _pdfRepo.UpdateAsync(id, pdfDto);
+        if (updated == null)
+        {
+            return NotFound("PDF not found.");
+        }
+
+        return Ok(updated.ToPdfDto());
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var deleted = await _pdfRepo.DeleteAsync(id);
+        if (deleted == null)
+        {
+            return NotFound("PDF not found.");
+        }
+
+        return NoContent();
+    }
+}

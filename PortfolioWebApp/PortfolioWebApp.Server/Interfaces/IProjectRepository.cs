@@ -10,7 +10,7 @@ namespace PortfolioWebApp.Server.Repositories
         Task<Project> CreateAsync(Project projectModel);
         Task<Project?> UpdateAsync(int id, UpdateProjectDto projectDto);
         Task<Project?> DeleteAsync(int id);
-        Task<bool> ImageExists(int id);
+ 
 
     }
 }

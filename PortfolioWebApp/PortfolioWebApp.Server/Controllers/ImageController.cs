@@ -20,7 +20,7 @@ public class ImageController : ControllerBase
     {
         var images = await _imageRepo.GetAllAsync();
         var imageDto = images.Select(i => i.ToImageDto());
-        return Ok(images);
+        return Ok(imageDto);
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
