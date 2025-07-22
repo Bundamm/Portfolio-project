@@ -46,6 +46,7 @@ public class PdfController : ControllerBase
 
         var pdfModel = new Pdf
         {
+            PdfName = pdfDto.Name,
             PdfPath = pdfDto.Path,
             ProjectId = projectId
         };

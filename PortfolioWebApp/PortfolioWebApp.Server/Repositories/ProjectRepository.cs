@@ -15,9 +15,11 @@ namespace PortfolioWebApp.Server.Repositories
             _context = context;
         }
 
-        public Task<Project> CreateAsync(Project projectModel)
+        public async Task<Project> CreateAsync(Project projectModel)
         {
-            throw new NotImplementedException();
+            _context.projects.Add(projectModel);
+            await _context.SaveChangesAsync();
+            return projectModel;
         }
 
         public Task<Project?> DeleteAsync(int id)
@@ -46,9 +48,16 @@ namespace PortfolioWebApp.Server.Repositories
             return _context.projects.AnyAsync(s => s.ProjectId == id);
         }
 
-        public Task<Project?> UpdateAsync(int id, UpdateProjectDto projectDto)
+        public async Task<Project?> UpdateAsync(int id, UpdateProjectDto projectDto)
         {
-            throw new NotImplementedException();
+            var project = await _context.projects.FindAsync(id);
+            if (project == null) return null;
+            project.ProjectName = projectDto.Name;
+            project.Description = projectDto.Description;
+            project.CategoryId = projectDto.CategoryId;
+            project.UserId = projectDto.UserId;
+            await _context.SaveChangesAsync();
+            return project;
         }
 
 

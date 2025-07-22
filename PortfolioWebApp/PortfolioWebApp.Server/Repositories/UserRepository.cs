@@ -1,6 +1,7 @@
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using PortfolioWebApp.Server.DTO.User;
 
 namespace PortfolioWebApp.Server.Repositories
 {
@@ -12,10 +13,41 @@ namespace PortfolioWebApp.Server.Repositories
             _context = context;
         }
 
-        public IEnumerable<User> GetAll() => _context.users.Include(u => u.Projects).ToList();
-        public User? GetById(int id) => _context.users.Include(u => u.Projects).FirstOrDefault(u => u.Id == id);
-        public void Add(User user) { _context.users.Add(user); _context.SaveChanges(); }
-        public void Update(User user) { _context.users.Update(user); _context.SaveChanges(); }
-        public void Delete(int id) { var user = _context.users.Find(id); if (user != null) { _context.users.Remove(user); _context.SaveChanges(); } }
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.users.Include(u => u.Projects).ToListAsync();
+        }
+
+        public async Task<User?> GetByIdAsync(int id)
+        {
+            return await _context.users.Include(u => u.Projects).FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User> CreateAsync(User userModel)
+        {
+            _context.users.Add(userModel);
+            await _context.SaveChangesAsync();
+            return userModel;
+        }
+
+        public async Task<User?> UpdateAsync(int id, UpdateUserDto userDto)
+        {
+            var user = await _context.users.FindAsync(id);
+            if (user == null) return null;
+            user.Username = userDto.Username;
+            user.PasswordHash = userDto.PasswordHash;
+            user.Role = userDto.Role;
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User?> DeleteAsync(int id)
+        {
+            var user = await _context.users.FindAsync(id);
+            if (user == null) return null;
+            _context.users.Remove(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
     }
 }
