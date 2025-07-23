@@ -19,36 +19,36 @@ namespace PortfolioWebApp.Server.Repositories
         public async Task<Image> CreateAsync(Image imageModel)
         {
 
-            await _context.images.AddAsync(imageModel);
+            await _context.Images.AddAsync(imageModel);
             await _context.SaveChangesAsync();
             return imageModel;
         }
 
         public async Task<Image?> DeleteAsync(int id)
         {
-            var imageModel = await _context.images.FirstOrDefaultAsync(x => x.ImageId == id);
+            var imageModel = await _context.Images.FirstOrDefaultAsync(x => x.ImageId == id);
             if (imageModel == null)
             {
                 return null;
             }
-            _context.images.Remove(imageModel);
+            _context.Images.Remove(imageModel);
             await _context.SaveChangesAsync();
             return imageModel;
         }
 
         public async Task<IEnumerable<Image>> GetAllAsync()
         {
-            return await _context.images.ToListAsync();
+            return await _context.Images.ToListAsync();
         }
 
         public async Task<Image?> GetByIdAsync(int id)
         {
-            return await _context.images.FindAsync(id);
+            return await _context.Images.FindAsync(id);
         }
 
         public async Task<Image?> UpdateAsync(int id, Image imageModel)
         {
-            var existingImage = await _context.images.FirstOrDefaultAsync(x => x.ImageId == id);
+            var existingImage = await _context.Images.FirstOrDefaultAsync(x => x.ImageId == id);
             if (existingImage == null)
             {
                 return null;
