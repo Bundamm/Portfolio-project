@@ -323,3 +323,4 @@ typings/
 .serverless
 
 .idea
+PortfolioWebApp/PortfolioWebApp.Server/appsettings.json
