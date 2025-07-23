@@ -1,10 +1,7 @@
 using PortfolioWebApp.Server.Models;
-using PortfolioWebApp.Server.DTO.Image;
 using PortfolioWebApp.Server.DTO;
-using PortfolioWebApp.Server.Data;
-using System.Net.NetworkInformation;
 using PortfolioWebApp.Server.DTO.Pdf;
-using System.Runtime.CompilerServices;
+
 
 namespace PortfolioWebApp.Server.Mappers
 {
@@ -15,15 +12,16 @@ namespace PortfolioWebApp.Server.Mappers
             return new PdfDto
             {
                 Id = pdfModel.PdfId,
+                Name = pdfModel.PdfName,
                 Path = pdfModel.PdfPath,
                 ProjectId = pdfModel.ProjectId
             };
         }
-        public static Pdf ToPdfFromCreatePdfDto(this CreatePdfDto pdfDto)
+        public static Pdf ToPdfFromCreatePdfDto(this CreatePdfDto pdfDto, int projectId)
         {
             return new Pdf
             {
-                ProjectId = pdfDto.ProjectId,
+                ProjectId = projectId,
                 PdfPath = pdfDto.Path,
                 PdfName = pdfDto.Name
             };
@@ -33,7 +31,8 @@ namespace PortfolioWebApp.Server.Mappers
         {
             return new Pdf
             {
-                PdfPath = pdfDto.Path
+                PdfPath = pdfDto.Path,
+                PdfName = pdfDto.Name
             };
         }
     }

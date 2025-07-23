@@ -15,12 +15,16 @@ namespace PortfolioWebApp.Server.Repositories
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.categories.Include(c => c.Projects).ToListAsync();
+            return await _context.categories
+                .Include(c => c.Projects)
+                .ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)
         {
-            return await _context.categories.Include(c => c.Projects).FirstOrDefaultAsync(c => c.CategoryId == id);
+            return await _context.categories
+                .Include(c => c.Projects)
+                .FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
         public async Task<Category> CreateAsync(Category categoryModel)
@@ -30,7 +34,12 @@ namespace PortfolioWebApp.Server.Repositories
             return categoryModel;
         }
 
-        public async Task<Category> UpdateAsync(int id, UpdateCategoryDto categoryDto)
+        public Task<bool> CategoryExists(int id)
+        {
+            return _context.categories.AnyAsync(c => c.CategoryId == id);
+        }
+
+        public async Task<Category?> UpdateAsync(int id, UpdateCategoryDto categoryDto)
         {
             var category = await _context.categories.FindAsync(id);
             if (category == null) return null;
@@ -40,14 +49,16 @@ namespace PortfolioWebApp.Server.Repositories
             return category;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Category?> DeleteAsync(int id)
         {
             var category = await _context.categories.FindAsync(id);
-            if (category != null)
+            if (category == null)
             {
-                _context.categories.Remove(category);
-                await _context.SaveChangesAsync();
+                return null;
             }
+            _context.categories.Remove(category);
+            await _context.SaveChangesAsync();
+            return category;
         }
     }
 }

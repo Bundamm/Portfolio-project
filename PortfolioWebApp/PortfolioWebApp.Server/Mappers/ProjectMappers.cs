@@ -30,5 +30,16 @@ namespace PortfolioWebApp.Server.Mappers
                 UserId = dto.UserId
             };
         }
+
+        public static Project ToProjectFromUpdateDto(this UpdateProjectDto dto, int categoryId)
+        {
+            return new Project
+            {
+                ProjectName = dto.Name,
+                Description = dto.Description,
+                CategoryId = categoryId,
+                UserId = dto.UserId
+            };
+        }
     }
 }

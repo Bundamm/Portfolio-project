@@ -15,12 +15,16 @@ namespace PortfolioWebApp.Server.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.users.Include(u => u.Projects).ToListAsync();
+            return await _context.users
+                .Include(u => u.Projects)
+                .ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.users.Include(u => u.Projects).FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.users.
+                Include(u => u.Projects)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User> CreateAsync(User userModel)

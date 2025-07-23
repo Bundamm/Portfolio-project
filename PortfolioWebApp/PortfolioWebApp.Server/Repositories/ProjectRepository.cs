@@ -1,5 +1,4 @@
 
-using System.ComponentModel.DataAnnotations;
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +21,16 @@ namespace PortfolioWebApp.Server.Repositories
             return projectModel;
         }
 
-        public Task<Project?> DeleteAsync(int id)
+        public async Task<Project?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var project = await _context.projects.FindAsync(id);
+            if (project == null)
+            {
+                return null;   
+            }
+            _context.projects.Remove(project);
+            await _context.SaveChangesAsync();
+            return project;
         }
 
         public async Task<IEnumerable<Project>> GetAllAsync()
@@ -32,6 +38,7 @@ namespace PortfolioWebApp.Server.Repositories
             return await _context.projects
                 .Include(i => i.Images)
                 .Include(p => p.Pdfs)
+                .Include(c => c.Category)
                 .ToListAsync();
         }
 
@@ -40,6 +47,7 @@ namespace PortfolioWebApp.Server.Repositories
             return await _context.projects
                 .Include(i => i.Images)
                 .Include(p => p.Pdfs)
+                .Include(c => c.Category)
                 .FirstOrDefaultAsync(i => i.ProjectId == id);
         }
 
@@ -48,16 +56,16 @@ namespace PortfolioWebApp.Server.Repositories
             return _context.projects.AnyAsync(s => s.ProjectId == id);
         }
 
-        public async Task<Project?> UpdateAsync(int id, UpdateProjectDto projectDto)
+        public async Task<Project?> UpdateAsync(int id, Project projectModel)
         {
-            var project = await _context.projects.FindAsync(id);
-            if (project == null) return null;
-            project.ProjectName = projectDto.Name;
-            project.Description = projectDto.Description;
-            project.CategoryId = projectDto.CategoryId;
-            project.UserId = projectDto.UserId;
+            var existingProject = await _context.projects.FirstOrDefaultAsync(x => x.ProjectId == id);
+            if (existingProject == null) return null;
+            existingProject.ProjectName = projectModel.ProjectName;
+            existingProject.Description = projectModel.Description;
+            existingProject.CategoryId = projectModel.CategoryId;
+            existingProject.UserId = projectModel.UserId;
             await _context.SaveChangesAsync();
-            return project;
+            return existingProject;
         }
 
 

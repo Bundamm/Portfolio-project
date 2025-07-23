@@ -1,29 +1,20 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PortfolioWebApp.Server.Data;
-using PortfolioWebApp.Server.Models;
 using PortfolioWebApp.Server.Repositories;
-using PortfolioWebApp.Server.DTO;
+using PortfolioWebApp.Server.DTO.Project;
 using PortfolioWebApp.Server.Mappers;
-using PortfolioWebApp.Server.Controllers;
+
 
 [ApiController]
 [Route("api/[controller]")]
 public class ProjectsController : ControllerBase
 {
     private readonly IProjectRepository _projectRepository;
-    private readonly PortfolioWebAppContext _context;
+    private readonly ICategoryRepository _categoryRepo;
 
-    public ProjectsController(IProjectRepository projectRepository, PortfolioWebAppContext portfolioContext)
+    public ProjectsController(IProjectRepository projectRepository, ICategoryRepository categoryRepo)
     {
         _projectRepository = projectRepository;
-        _context = portfolioContext;
-    }
-
-    [HttpGet("categories")]
-    public IActionResult GetCategories()
-    {
-        return Ok(CategoryController._categories.Select(c => c.ToCategoryDto()));
+        _categoryRepo = categoryRepo;
     }
 
     [HttpGet]
@@ -43,37 +34,32 @@ public class ProjectsController : ControllerBase
         return Ok(project.ToProjectDto());
     }
 
-    [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] ProjectDto dto)
+    [HttpPost("{categoryId}")]
+    public async Task<IActionResult> Create([FromRoute] int categoryId, [FromBody] CreateProjectDto projectDto)
     {
-        var project = new Project
+        if(!await _categoryRepo.CategoryExists(categoryId))
         {
-            ProjectName = dto.Name,
-            Description = dto.Description,
-            CategoryId = dto.CategoryId,
-            UserId = dto.UserId
-        };
-        var created = await _projectRepository.CreateAsync(project);
+            return NotFound("Category for this project does not exist.");
+        }
+        var projectModel = projectDto.ToProjectFromCreateDto(categoryId);
+        var created = await _projectRepository.CreateAsync(projectModel);
         return CreatedAtAction(nameof(GetById), new { id = created.ProjectId }, created.ToProjectDto());
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] ProjectDto dto)
+    [HttpPut]
+    [Route("{categoryId}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateProjectDto dto, [FromRoute] int categoryId)
     {
-        var updateDto = new PortfolioWebApp.Server.DTO.Project.UpdateProjectDto
+        var projectModel = await _projectRepository.UpdateAsync(id, dto.ToProjectFromUpdateDto(categoryId));
+        if(projectModel == null)
         {
-            Name = dto.Name,
-            Description = dto.Description,
-            CategoryId = dto.CategoryId,
-            UserId = dto.UserId
-        };
-        var result = await _projectRepository.UpdateAsync(id, updateDto);
-        if (result == null)
-            return NotFound();
-        return Ok(result.ToProjectDto());
+            return NotFound("Project not found.");
+        }
+        return Ok(projectModel.ToProjectDto());
     }
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete]
+    [Route("{id}")]
     public async Task<IActionResult> Delete(int id, [FromQuery] int userId)
     {
         try

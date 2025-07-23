@@ -6,7 +6,8 @@ namespace PortfolioWebApp.Server.Models
     public class Image
     {
         public int ImageId { get; set; }
-        
+
+        [Required]
         public int ProjectId { get;set; }
         [Required]
         [MaxLength(255)]

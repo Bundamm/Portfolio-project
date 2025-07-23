@@ -16,11 +16,10 @@ namespace PortfolioWebApp.Server.Mappers
             };
         }
 
-        public static Category ToCategory(this CategoryDto categoryDto)
+        public static Category ToCategoryFromCreateDto(this CreateCategoryDto categoryDto)
         {
             return new Category
             {
-                CategoryId = categoryDto.CategoryId,
                 CategoryName = categoryDto.CategoryName,
                 Description = categoryDto.Description
             };

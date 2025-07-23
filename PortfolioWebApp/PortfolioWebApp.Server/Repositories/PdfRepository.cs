@@ -56,10 +56,8 @@ namespace PortfolioWebApp.Server.Repositories
             {
                 return null;
             }
-            existingPdf.ProjectId = pdfDto.ProjectId;
             existingPdf.PdfPath = pdfDto.Path;
-            existingPdf.Project = await _context.projects
-                .FirstOrDefaultAsync(x => x.ProjectId == pdfDto.ProjectId);
+            existingPdf.PdfName = pdfDto.Name;
             await _context.SaveChangesAsync();
             return existingPdf;
 

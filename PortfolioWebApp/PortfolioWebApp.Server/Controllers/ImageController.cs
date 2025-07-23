@@ -38,7 +38,7 @@ public class ImageController : ControllerBase
     {
         if (!await _projectRepo.ProjectExists(projectId)) 
         {
-            return NotFound("Image does not exist.");
+            return NotFound("Project does not exist.");
         }
         var imageModel = imageDto.ToImageFromCreateImageDto(projectId);
         await _imageRepo.CreateAsync(imageModel);

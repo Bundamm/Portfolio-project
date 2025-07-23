@@ -8,7 +8,8 @@ namespace PortfolioWebApp.Server.Repositories
         Task<IEnumerable<Category>> GetAllAsync();
         Task<Category?> GetByIdAsync(int id);
         Task<Category> CreateAsync(Category categoryModel);
-        Task<Category> UpdateAsync(int id, UpdateCategoryDto categoryDto);
-        Task DeleteAsync(int id);
+        Task<Category?> UpdateAsync(int id, UpdateCategoryDto categoryDto);
+        Task<Category?> DeleteAsync(int id);
+        Task<bool> CategoryExists(int id);
     }
 }
