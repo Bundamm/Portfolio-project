@@ -15,33 +15,33 @@ namespace PortfolioWebApp.Server.Repositories
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.categories
+            return await _context.Categories
                 .Include(c => c.Projects)
                 .ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)
         {
-            return await _context.categories
+            return await _context.Categories
                 .Include(c => c.Projects)
                 .FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
         public async Task<Category> CreateAsync(Category categoryModel)
         {
-            _context.categories.Add(categoryModel);
+            _context.Categories.Add(categoryModel);
             await _context.SaveChangesAsync();
             return categoryModel;
         }
 
         public Task<bool> CategoryExists(int id)
         {
-            return _context.categories.AnyAsync(c => c.CategoryId == id);
+            return _context.Categories.AnyAsync(c => c.CategoryId == id);
         }
 
         public async Task<Category?> UpdateAsync(int id, UpdateCategoryDto categoryDto)
         {
-            var category = await _context.categories.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category == null) return null;
             category.CategoryName = categoryDto.CategoryName;
             category.Description = categoryDto.Description;
@@ -51,12 +51,12 @@ namespace PortfolioWebApp.Server.Repositories
 
         public async Task<Category?> DeleteAsync(int id)
         {
-            var category = await _context.categories.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
                 return null;
             }
-            _context.categories.Remove(category);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return category;
         }
