@@ -1,3 +1,5 @@
+
+
 namespace PortfolioWebApp.Server.DTO.User;
 
 public class UserDto
@@ -6,5 +8,5 @@ public class UserDto
     public string Username { get; set; } = null!;
     public string PasswordHash { get; set; } = null!;
     public string Role { get; set; } = "admin";
-    public List<int> ProjectIds { get; set; } = new List<int>();
+    public List<ProjectDto>? Projects { get; set; }
 }

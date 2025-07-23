@@ -44,12 +44,8 @@ public class PdfController : ControllerBase
             return NotFound("Project does not exist.");
         }
 
-        var pdfModel = new Pdf
-        {
-            PdfName = pdfDto.Name,
-            PdfPath = pdfDto.Path,
-            ProjectId = projectId
-        };
+        var pdfModel = pdfDto.ToPdfFromCreatePdfDto(projectId);
+        
 
         await _pdfRepo.CreateAsync(pdfModel);
         return CreatedAtAction(nameof(GetById), new { id = pdfModel.PdfId }, pdfModel.ToPdfDto());
@@ -58,7 +54,7 @@ public class PdfController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdatePdfDto pdfDto)
     {
-        var updated = await _pdfRepo.UpdateAsync(id, pdfDto);
+        var updated = await _pdfRepo.UpdateAsync(id, pdfDto.ToPdfFromUpdateDto());
         if (updated == null)
         {
             return NotFound("PDF not found.");

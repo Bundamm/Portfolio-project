@@ -60,14 +60,14 @@ public class ProjectsController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    public async Task<IActionResult> Delete(int id, [FromQuery] int userId)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             var deleted = await _projectRepository.DeleteAsync(id);
             if (deleted is null)
                 return NotFound();
-            return Ok(deleted);
+            return NoContent();
         }
         catch (AccessViolationException ex)
         {

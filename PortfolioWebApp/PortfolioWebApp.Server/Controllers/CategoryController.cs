@@ -9,17 +9,8 @@ using PortfolioWebApp.Server.Repositories;
 [Route("api/category")]
 public class CategoryController : ControllerBase
 {
-    // Hard Coded list cause idk if we gonna implemented CRUD for categories
-    //public static readonly List<Category> _categories = new List<Category>
-    //{
-    //    new Category { CategoryId = 1, CategoryName = "Gqux", Description = "Description for Gqux" },
-    //    new Category { CategoryId = 2, CategoryName = "Gquux", Description = "Description for Gquux" },
-    //    new Category { CategoryId = 3, CategoryName = "Gguuxx", Description = "Descrpiton for Gquuux" }
-    //};
-
     private readonly ICategoryRepository _categoryRepository;
     
-
     public CategoryController(ICategoryRepository categoryRepository)
     {
         _categoryRepository = categoryRepository;
@@ -53,14 +44,25 @@ public class CategoryController : ControllerBase
     }
     [HttpPut]
     [Route("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryDto categoryDto, [FromRoute] int id)
+    public async Task<IActionResult> Update([FromBody] UpdateCategoryDto categoryDto, [FromRoute] int id)
+    {
+        var update = await _categoryRepository.UpdateAsync(id, categoryDto);
+        if(update == null)
+        {
+            return NotFound();
+        }
+        return Ok(update.ToCategoryDto());
+    }
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> Delete(int id)
     {
         var delete = await _categoryRepository.DeleteAsync(id);
         if(delete == null)
         {
             return NotFound();
         }
-        return Ok(delete);
+        return NoContent();
     }
 
     

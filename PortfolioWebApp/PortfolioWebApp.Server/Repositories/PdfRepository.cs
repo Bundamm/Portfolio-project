@@ -49,15 +49,15 @@ namespace PortfolioWebApp.Server.Repositories
             return await _context.pdfs.FindAsync(id);
         }
 
-        public async Task<Pdf?> UpdateAsync(int id, UpdatePdfDto pdfDto)
+        public async Task<Pdf?> UpdateAsync(int id, Pdf pdfModel)
         {
             var existingPdf = await _context.pdfs.FirstOrDefaultAsync(x => x.PdfId == id);
             if (existingPdf == null)
             {
                 return null;
             }
-            existingPdf.PdfPath = pdfDto.Path;
-            existingPdf.PdfName = pdfDto.Name;
+            existingPdf.PdfPath = pdfModel.PdfPath;
+            existingPdf.PdfName = pdfModel.PdfName;
             await _context.SaveChangesAsync();
             return existingPdf;
 

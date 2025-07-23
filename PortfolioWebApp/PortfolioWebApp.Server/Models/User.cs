@@ -14,6 +14,6 @@ namespace PortfolioWebApp.Server.Models
         public string Role { get; set; } = "admin"; // lub root
 
         // Relacje
-        public ICollection<Project> Projects { get; set; } = new List<Project>();
+        public List<Project> Projects { get; set; } = new List<Project>();
     }
 }
