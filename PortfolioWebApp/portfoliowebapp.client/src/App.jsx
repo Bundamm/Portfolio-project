@@ -1,12 +1,31 @@
-import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import Navbar from '@/components/navbar';
+import AboutMe from '@/pages/AboutMe';
+import Projects from '@/pages/Projects';
+import Contact from '@/pages/Contact';
 import './App.css';
 
 function App() {
     return (
-        <div className="flex min-h-svh flex-col items-center justify-center">
-            <Button>Click me</Button>
-        </div>
+        <BrowserRouter>
+            <div className="min-h-svh flex flex-col">
+                <header className="p-4 border-b">
+                    <Navbar />
+                </header>
+                <main className="flex-grow">
+                    <Routes>
+                        <Route path="/" element={<AboutMe />} />
+                        <Route path="/about" element={<AboutMe />} />
+                        <Route path="/projects" element={<Projects />} />
+                        <Route path="/contact" element={<Contact />} />
+                    </Routes>
+                </main>
+                <footer className="p-4 border-t text-center text-sm text-gray-500">
+                    &copy; {new Date().getFullYear()} Your Portfolio
+                </footer>
+            </div>
+        </BrowserRouter>
     )
 }
 
