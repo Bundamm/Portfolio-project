@@ -6,7 +6,6 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import './navbar.css'
 function Navbar() {
     return (
         <NavigationMenu viewport={false}>
