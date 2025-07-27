@@ -1,5 +1,4 @@
-﻿using PortfolioWebApp.Server.DTO;
-using PortfolioWebApp.Server.DTO.Category;
+﻿using PortfolioWebApp.Server.DTO.Category;
 using PortfolioWebApp.Server.Models;
 
 namespace PortfolioWebApp.Server.Mappers

@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Nowy folder\**" />
+    <Content Remove="Nowy folder\**" />
+    <EmbeddedResource Remove="Nowy folder\**" />
+    <None Remove="Nowy folder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Services\FileService.cs" />
   </ItemGroup>
 
@@ -27,6 +34,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
@@ -42,10 +50,10 @@
   <ItemGroup>
     <Folder Include="DTO\Category\" />
     <Folder Include="DTO\Image\" />
+    <Folder Include="DTO\AboutMe\" />
     <Folder Include="DTO\User\" />
     <Folder Include="DTO\Project\" />
     <Folder Include="DTO\Pdf\" />
-    <Folder Include="Nowy folder\" />
   </ItemGroup>
 
 </Project>

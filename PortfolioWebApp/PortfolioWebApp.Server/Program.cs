@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IAboutMeRepository, AboutMeRepository>();
+builder.Services.AddScoped<AboutMeRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<ImageRepository>();
 builder.Services.AddScoped<PdfRepository>();
