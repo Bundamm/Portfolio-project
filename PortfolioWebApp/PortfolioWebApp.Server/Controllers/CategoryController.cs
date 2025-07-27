@@ -25,7 +25,7 @@ public class CategoryController : ControllerBase
     }
     
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
@@ -38,14 +38,19 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto categoryDto)
     {
+
         var categoryModel = categoryDto.ToCategoryFromCreateDto();
         var created = await _categoryRepository.CreateAsync(categoryModel);
         return CreatedAtAction(nameof(GetById), new { id = created.CategoryId }, created.ToCategoryDto());
     }
     [HttpPut]
-    [Route("{id}")]
+    [Route("{id:int}")]
     public async Task<IActionResult> Update([FromBody] UpdateCategoryDto categoryDto, [FromRoute] int id)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var update = await _categoryRepository.UpdateAsync(id, categoryDto);
         if(update == null)
         {
@@ -54,7 +59,7 @@ public class CategoryController : ControllerBase
         return Ok(update.ToCategoryDto());
     }
     [HttpDelete]
-    [Route("{id}")]
+    [Route("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var delete = await _categoryRepository.DeleteAsync(id);

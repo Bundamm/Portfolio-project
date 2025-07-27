@@ -1,7 +1,6 @@
 using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
-using PortfolioWebApp.Server.DTO.User;
 
 namespace PortfolioWebApp.Server.Repositories
 {

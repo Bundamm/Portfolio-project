@@ -5,8 +5,6 @@ namespace PortfolioWebApp.Server.Models
     public class Category
     {
         public int CategoryId { get; set; }
-        [Required]
-        [MaxLength(255)]
         public string? CategoryName { get; set; }
         public string? Description { get; set; }
 

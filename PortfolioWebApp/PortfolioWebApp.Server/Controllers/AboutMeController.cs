@@ -15,7 +15,7 @@ namespace PortfolioWebApp.Server.Controllers
         {
             _aboutMeRepository = aboutMeRepository;
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<AboutMe>> GetById(int id)
         {
             var aboutMe = await _aboutMeRepository.GetByIdAsync(id);
@@ -28,9 +28,13 @@ namespace PortfolioWebApp.Server.Controllers
             return Ok(aboutMe.ToAboutMeDto());
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, UpdateAboutMeDto aboutMeDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var update = await _aboutMeRepository.UpdateAsync(id, aboutMeDto);
             if (update == null)
             {
