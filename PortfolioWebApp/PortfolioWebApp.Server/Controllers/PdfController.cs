@@ -25,7 +25,7 @@ public class PdfController : ControllerBase
         return Ok(pdfDtos);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var pdf = await _pdfRepo.GetByIdAsync(id);
@@ -36,9 +36,13 @@ public class PdfController : ControllerBase
         return Ok(pdf.ToPdfDto());
     }
 
-    [HttpPost("{projectId}")]
+    [HttpPost("{projectId:int}")]
     public async Task<IActionResult> Create([FromRoute] int projectId, [FromBody] CreatePdfDto pdfDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         if (!await _projectRepo.ProjectExists(projectId))
         {
             return NotFound("Project does not exist.");
@@ -51,9 +55,13 @@ public class PdfController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = pdfModel.PdfId }, pdfModel.ToPdfDto());
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdatePdfDto pdfDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var updated = await _pdfRepo.UpdateAsync(id, pdfDto.ToPdfFromUpdateDto());
         if (updated == null)
         {
@@ -63,7 +71,7 @@ public class PdfController : ControllerBase
         return Ok(updated.ToPdfDto());
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         var deleted = await _pdfRepo.DeleteAsync(id);

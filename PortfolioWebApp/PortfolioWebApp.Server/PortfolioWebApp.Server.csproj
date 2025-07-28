@@ -10,13 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Nowy folder\**" />
-    <Content Remove="Nowy folder\**" />
-    <EmbeddedResource Remove="Nowy folder\**" />
-    <None Remove="Nowy folder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Services\FileService.cs" />
   </ItemGroup>
 
@@ -54,6 +47,7 @@
     <Folder Include="DTO\User\" />
     <Folder Include="DTO\Project\" />
     <Folder Include="DTO\Pdf\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>

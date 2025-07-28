@@ -3,6 +3,7 @@ using PortfolioWebApp.Server.Data;
 using PortfolioWebApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using PortfolioWebApp.Server.DTO.Project;
+using PortfolioWebApp.Server.Helpers;
 
 namespace PortfolioWebApp.Server.Repositories
 {

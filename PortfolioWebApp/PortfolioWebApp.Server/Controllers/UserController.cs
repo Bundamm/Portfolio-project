@@ -15,7 +15,7 @@ namespace PortfolioWebApp.Server.Controllers
             _userRepo = userRepo;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var user = await _userRepo.GetByIdAsync(id);
@@ -25,9 +25,13 @@ namespace PortfolioWebApp.Server.Controllers
             }
             return Ok(user.ToUserDto());
         }
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateUserDto userDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var user = await _userRepo.UpdateAsync(id, userDto.ToUserFromUpdateDto());
             if (user == null)
             {

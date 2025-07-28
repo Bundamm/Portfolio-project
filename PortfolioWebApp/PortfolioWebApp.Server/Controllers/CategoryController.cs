@@ -38,7 +38,10 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto categoryDto)
     {
-
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var categoryModel = categoryDto.ToCategoryFromCreateDto();
         var created = await _categoryRepository.CreateAsync(categoryModel);
         return CreatedAtAction(nameof(GetById), new { id = created.CategoryId }, created.ToCategoryDto());

@@ -22,7 +22,7 @@ public class ImageController : ControllerBase
         var imageDto = images.Select(i => i.ToImageDto());
         return Ok(imageDto);
     }
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var image = await _imageRepo.GetByIdAsync(id);
@@ -33,9 +33,13 @@ public class ImageController : ControllerBase
         return Ok(image.ToImageDto());
     }
 
-    [HttpPost("{projectId}")]
+    [HttpPost("{projectId:int}")]
     public async Task<IActionResult> Create([FromRoute] int projectId, [FromBody] CreateImageDto imageDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         if (!await _projectRepo.ProjectExists(projectId)) 
         {
             return NotFound("Project does not exist.");
@@ -46,9 +50,13 @@ public class ImageController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id}")]
+    [Route("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody]  UpdateImageDto imageDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var imageModel = await _imageRepo.UpdateAsync(id, imageDto.ToImageFromUpdateImageDto());
         if(imageModel == null)
         {
@@ -57,7 +65,7 @@ public class ImageController : ControllerBase
         return Ok(imageModel.ToImageDto());
     }
     [HttpDelete]
-    [Route("{id}")]
+    [Route("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         var imageModel = await _imageRepo.DeleteAsync(id);

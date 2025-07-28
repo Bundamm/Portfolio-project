@@ -25,7 +25,7 @@ public class ProjectsController : ControllerBase
         return Ok(dtos);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var project = await _projectRepository.GetByIdAsync(id);
@@ -34,10 +34,14 @@ public class ProjectsController : ControllerBase
         return Ok(project.ToProjectDto());
     }
 
-    [HttpPost("{categoryId}")]
+    [HttpPost("{categoryId:int}")]
     public async Task<IActionResult> Create([FromRoute] int categoryId, [FromBody] CreateProjectDto projectDto)
     {
-        if(!await _categoryRepo.CategoryExists(categoryId))
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        if (!await _categoryRepo.CategoryExists(categoryId))
         {
             return NotFound("Category for this project does not exist.");
         }
@@ -47,9 +51,13 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{categoryId}")]
+    [Route("{categoryId:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateProjectDto dto, [FromRoute] int categoryId)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var projectModel = await _projectRepository.UpdateAsync(id, dto.ToProjectFromUpdateDto(categoryId));
         if(projectModel == null)
         {
