@@ -12,6 +12,9 @@ public class UpdateAboutMeDto
     [MinLength(10, ErrorMessage ="Description must be at least 10 characters long.")]
     public string? Description { get; set; }
 
+    [RegularExpression(@"^\+?[0-9]{9,15}$", ErrorMessage = "Phone number is not valid.")]
     public string? Phone { get; set; }
+
+    [EmailAddress(ErrorMessage = "Invalid email address.")]
     public string? Email { get; set; }
 }

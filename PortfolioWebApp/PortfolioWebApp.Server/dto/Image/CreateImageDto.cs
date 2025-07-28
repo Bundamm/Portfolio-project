@@ -1,12 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioWebApp.Server.DTO.Image;
-
-public class CreateImageDto
+namespace PortfolioWebApp.Server.DTO.Image
 {
-    [Required]
-    [MinLength(1, ErrorMessage = "Path cannot be empty.")]
-    public string Path { get; set; } = null!;
-    [Required]
-    public int ProjectId { get; set; }
+    public class CreateImageDto
+    {
+        [Required]
+        [Url(ErrorMessage = "Path must be a valid URL.")]
+        [RegularExpression(@".*\.(jpg|jpeg|png|gif|webp)$",
+            ErrorMessage = "Path must link to an image file (jpg, jpeg, png, gif, webp).")]
+        public string Path { get; set; } = null!;
+
+        [Required]
+        public int ProjectId { get; set; }
+    }
 }
