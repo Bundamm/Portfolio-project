@@ -1,15 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace PortfolioWebApp.Server.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-        public string Username { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
-        public string Role { get; set; } = "admin"; // lub root
-
-        // Relacje
-        public List<Project> Projects { get; set; } = new List<Project>();
     }
 }

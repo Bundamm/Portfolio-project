@@ -14,7 +14,6 @@ namespace PortfolioWebApp.Server.Mappers
                 Name = projectModel.ProjectName,
                 Description = projectModel.Description,
                 CategoryId = projectModel.CategoryId,
-                UserId = projectModel.UserId,
                 Images = projectModel.Images.Select(img => img.ToImageDto()).ToList(),
                 Pdfs = projectModel.Pdfs.Select(pdf => pdf.ToPdfDto()).ToList()
             };
@@ -26,8 +25,7 @@ namespace PortfolioWebApp.Server.Mappers
             {
                 ProjectName = dto.Name,
                 Description = dto.Description,
-                CategoryId = categoryId,
-                UserId = dto.UserId
+                CategoryId = categoryId
             };
         }
 
@@ -37,8 +35,7 @@ namespace PortfolioWebApp.Server.Mappers
             {
                 ProjectName = dto.Name,
                 Description = dto.Description,
-                CategoryId = categoryId,
-                UserId = dto.UserId
+                CategoryId = categoryId
             };
         }
     }

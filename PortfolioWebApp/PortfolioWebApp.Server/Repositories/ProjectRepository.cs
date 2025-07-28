@@ -64,7 +64,6 @@ namespace PortfolioWebApp.Server.Repositories
             existingProject.ProjectName = projectModel.ProjectName;
             existingProject.Description = projectModel.Description;
             existingProject.CategoryId = projectModel.CategoryId;
-            existingProject.UserId = projectModel.UserId;
             await _context.SaveChangesAsync();
             return existingProject;
         }
