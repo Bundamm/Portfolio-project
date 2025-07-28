@@ -24,10 +24,8 @@ namespace PortfolioWebApp.Server.Data
             {
                 new IdentityRole
                 {
-                    Id = "1",
                     Name = "Admin",
-                    NormalizedName = "ADMIN",
-                    ConcurrencyStamp = "1"
+                    NormalizedName = "ADMIN"
                 }
             };
             builder.Entity<IdentityRole>().HasData(roles);
