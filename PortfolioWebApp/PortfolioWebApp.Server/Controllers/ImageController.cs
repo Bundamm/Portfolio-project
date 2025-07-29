@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioWebApp.Server.DTO.Image;
 using PortfolioWebApp.Server.Mappers;
@@ -16,6 +17,7 @@ public class ImageController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var images = await _imageRepo.GetAllAsync();
@@ -23,6 +25,7 @@ public class ImageController : ControllerBase
         return Ok(imageDto);
     }
     [HttpGet("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var image = await _imageRepo.GetByIdAsync(id);
@@ -34,6 +37,7 @@ public class ImageController : ControllerBase
     }
 
     [HttpPost("{projectId:int}")]
+    [Authorize]
     public async Task<IActionResult> Create([FromRoute] int projectId, [FromBody] CreateImageDto imageDto)
     {
         if (!ModelState.IsValid)
@@ -51,6 +55,7 @@ public class ImageController : ControllerBase
 
     [HttpPut]
     [Route("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody]  UpdateImageDto imageDto)
     {
         if (!ModelState.IsValid)
@@ -66,6 +71,7 @@ public class ImageController : ControllerBase
     }
     [HttpDelete]
     [Route("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         var imageModel = await _imageRepo.DeleteAsync(id);

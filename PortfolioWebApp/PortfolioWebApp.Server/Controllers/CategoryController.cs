@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using PortfolioWebApp.Server.DTO.Category;
 using PortfolioWebApp.Server.Mappers;
@@ -17,6 +18,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var categories = await _categoryRepository.GetAllAsync();
@@ -26,6 +28,7 @@ public class CategoryController : ControllerBase
     
 
     [HttpGet("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
@@ -36,6 +39,7 @@ public class CategoryController : ControllerBase
         return Ok(category.ToCategoryDto());
     }
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto categoryDto)
     {
         if (!ModelState.IsValid)
@@ -48,6 +52,7 @@ public class CategoryController : ControllerBase
     }
     [HttpPut]
     [Route("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Update([FromBody] UpdateCategoryDto categoryDto, [FromRoute] int id)
     {
         if (!ModelState.IsValid)
@@ -63,6 +68,7 @@ public class CategoryController : ControllerBase
     }
     [HttpDelete]
     [Route("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         var delete = await _categoryRepository.DeleteAsync(id);

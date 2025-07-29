@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PortfolioWebApp.Server.DTO.Account;
+using PortfolioWebApp.Server.Interfaces;
 using PortfolioWebApp.Server.Models;
 
 namespace PortfolioWebApp.Server.Controllers
@@ -10,10 +12,14 @@ namespace PortfolioWebApp.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly ITokenService _tokenService;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<User> userManager)
+        public AccountController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signIn)
         {
             _userManager = userManager;
+            _tokenService = tokenService;
+            _signInManager = signIn;
         }
 
         [HttpPost("register")]
@@ -38,7 +44,14 @@ namespace PortfolioWebApp.Server.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(appUser, "Admin");
                     if (roleResult.Succeeded)
                     {
-                        return Ok("User created");
+                        return Ok(
+                            new NewUserDto
+                            {
+                                UserName = appUser.UserName,
+                                Email = appUser.Email,
+                                Token = _tokenService.CreateToken(appUser)
+                            }    
+                        );
                     }
                     else
                     {
@@ -56,6 +69,35 @@ namespace PortfolioWebApp.Server.Controllers
             }
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid username");
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            if (!result.Succeeded)
+            {
+                return Unauthorized("Username not found and/or password incorrect");
+            }
+
+            return Ok(
+                new NewUserDto
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Token = _tokenService.CreateToken(user)
+                }
+            );
+        }
         
     }
 

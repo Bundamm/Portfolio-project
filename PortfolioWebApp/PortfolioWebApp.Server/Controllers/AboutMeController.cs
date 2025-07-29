@@ -3,6 +3,8 @@ using PortfolioWebApp.Server.DTO.AboutMe;
 using PortfolioWebApp.Server.Models;
 using PortfolioWebApp.Server.Repositories;
 using PortfolioWebApp.Server.Mappers;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace PortfolioWebApp.Server.Controllers
 {
@@ -16,6 +18,7 @@ namespace PortfolioWebApp.Server.Controllers
             _aboutMeRepository = aboutMeRepository;
         }
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<AboutMe>> GetById(int id)
         {
             var aboutMe = await _aboutMeRepository.GetByIdAsync(id);
@@ -29,6 +32,7 @@ namespace PortfolioWebApp.Server.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Update(int id, UpdateAboutMeDto aboutMeDto)
         {
             if (!ModelState.IsValid)

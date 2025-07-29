@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PortfolioWebApp.Server.Repositories;
 using PortfolioWebApp.Server.DTO.Project;
 using PortfolioWebApp.Server.Mappers;
+using PortfolioWebApp.Server.Repositories;
 
 
 [ApiController]
@@ -18,6 +19,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var projects = await _projectRepository.GetAllAsync();
@@ -26,6 +28,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
         var project = await _projectRepository.GetByIdAsync(id);
@@ -35,6 +38,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost("{categoryId:int}")]
+    [Authorize]
     public async Task<IActionResult> Create([FromRoute] int categoryId, [FromBody] CreateProjectDto projectDto)
     {
         if (!ModelState.IsValid)
@@ -52,6 +56,7 @@ public class ProjectsController : ControllerBase
 
     [HttpPut]
     [Route("{categoryId:int}")]
+    [Authorize]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateProjectDto dto, [FromRoute] int categoryId)
     {
         if (!ModelState.IsValid)
@@ -68,6 +73,7 @@ public class ProjectsController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         try

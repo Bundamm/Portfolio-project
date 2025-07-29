@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioWebApp.Server.DTO.Pdf;
 using PortfolioWebApp.Server.Mappers;
@@ -18,6 +19,7 @@ public class PdfController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var pdfs = await _pdfRepo.GetAllAsync();
@@ -26,6 +28,7 @@ public class PdfController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var pdf = await _pdfRepo.GetByIdAsync(id);
@@ -37,6 +40,7 @@ public class PdfController : ControllerBase
     }
 
     [HttpPost("{projectId:int}")]
+    [Authorize]
     public async Task<IActionResult> Create([FromRoute] int projectId, [FromBody] CreatePdfDto pdfDto)
     {
         if (!ModelState.IsValid)
@@ -56,6 +60,7 @@ public class PdfController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdatePdfDto pdfDto)
     {
         if (!ModelState.IsValid)
@@ -72,6 +77,7 @@ public class PdfController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         var deleted = await _pdfRepo.DeleteAsync(id);
