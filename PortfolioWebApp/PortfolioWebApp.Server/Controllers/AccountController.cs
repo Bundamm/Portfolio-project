@@ -29,8 +29,17 @@ namespace PortfolioWebApp.Server.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    return BadRequest(new
+                    {
+                        errors = ModelState
+                            .Where(e => e.Value?.Errors.Count > 0)
+                            .ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value!.Errors.Select(err => err.ErrorMessage).ToArray()
+                            )
+                    });
                 }
+
                 var appUser = new User
                 {
                     UserName = registerDto.Username,
@@ -44,28 +53,36 @@ namespace PortfolioWebApp.Server.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(appUser, "Admin");
                     if (roleResult.Succeeded)
                     {
-                        return Ok(
-                            new NewUserDto
-                            {
-                                UserName = appUser.UserName,
-                                Email = appUser.Email,
-                                Token = _tokenService.CreateToken(appUser)
-                            }    
-                        );
+                        return Ok(new NewUserDto
+                        {
+                            UserName = appUser.UserName,
+                            Email = appUser.Email,
+                            Token = _tokenService.CreateToken(appUser)
+                        });
                     }
                     else
                     {
-                        return StatusCode(500, roleResult.Errors);
+                        return StatusCode(500, new
+                        {
+                            errors = roleResult.Errors.Select(e => e.Description)
+                        });
                     }
                 }
                 else
                 {
-                    return StatusCode(500, createdUser.Errors);
+                    return StatusCode(500, new
+                    {
+                        errors = createdUser.Errors.Select(e => e.Description)
+                    });
                 }
-            } 
-            catch(Exception e)
+            }
+            catch (Exception e)
             {
-                return StatusCode(500, e);
+                return StatusCode(500, new
+                {
+                    error = "Server error",
+                    message = e.Message
+                });
             }
         }
 
@@ -74,31 +91,36 @@ namespace PortfolioWebApp.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new
+                {
+                    errors = ModelState
+                        .Where(e => e.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value!.Errors.Select(err => err.ErrorMessage).ToArray()
+                        )
+                });
             }
+
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
 
             if (user == null)
             {
-                return Unauthorized("Invalid username");
+                return Unauthorized(new { error = "Invalid username" });
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
             if (!result.Succeeded)
             {
-                return Unauthorized("Username not found and/or password incorrect");
+                return Unauthorized(new { error = "Username not found and/or password incorrect" });
             }
 
-            return Ok(
-                new NewUserDto
-                {
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    Token = _tokenService.CreateToken(user)
-                }
-            );
+            return Ok(new NewUserDto
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Token = _tokenService.CreateToken(user)
+            });
         }
-        
     }
-
 }
