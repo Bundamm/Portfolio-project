@@ -18,7 +18,6 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var categories = await _categoryRepository.GetAllAsync();
@@ -28,7 +27,6 @@ public class CategoryController : ControllerBase
     
 
     [HttpGet("{id:int}")]
-    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);

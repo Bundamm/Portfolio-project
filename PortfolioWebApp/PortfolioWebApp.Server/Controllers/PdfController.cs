@@ -19,7 +19,6 @@ public class PdfController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var pdfs = await _pdfRepo.GetAllAsync();
@@ -28,7 +27,6 @@ public class PdfController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var pdf = await _pdfRepo.GetByIdAsync(id);

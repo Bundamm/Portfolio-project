@@ -19,7 +19,6 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var projects = await _projectRepository.GetAllAsync();
@@ -28,7 +27,6 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
         var project = await _projectRepository.GetByIdAsync(id);

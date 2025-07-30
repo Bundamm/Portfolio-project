@@ -17,7 +17,6 @@ public class ImageController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var images = await _imageRepo.GetAllAsync();
@@ -25,7 +24,6 @@ public class ImageController : ControllerBase
         return Ok(imageDto);
     }
     [HttpGet("{id:int}")]
-    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var image = await _imageRepo.GetByIdAsync(id);
