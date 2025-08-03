@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { getContactInfo } from "../services/api/aboutMeApi";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,30 @@ const contactFormSchema = z.object({
 
 function Contact() {
   const [submitResult, setSubmitResult] = useState(null);
+  const [contactInfo, setContactInfo] = useState({
+    email: null,
+    phone: null,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch contact information from the backend
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        setLoading(true);
+        const info = await getContactInfo();
+        setContactInfo(info);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching contact info:", err);
+        setError("Nie udało się pobrać danych kontaktowych.");
+        setLoading(false);
+      }
+    };
+
+    fetchContactInfo();
+  }, []);
 
   // Initialize the form with react-hook-form and zod validation
   const form = useForm({
@@ -137,12 +162,21 @@ function Contact() {
         </Form>
         
         <div className="mt-12 border-t pt-6">
-          <h2 className="text-xl font-semibold mb-4">Inne sposoby kontaktu</h2>
-          <div className="space-y-2">
-            <p>Email: <a href="mailto:twoj@email.com" className="text-blue-600 hover:underline">twoj@email.com</a></p>
-            <p>LinkedIn: <a href="https://linkedin.com/in/twojprofil" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">linkedin.com/in/twojprofil</a></p>
-            <p>GitHub: <a href="https://github.com/twojprofil" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">github.com/twojprofil</a></p>
-          </div>
+          <h2 className="text-xl font-semibold mb-4">Dane do kontaktu</h2>
+          {loading ? (
+            <p>Ładowanie danych kontaktowych...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-2">
+              {contactInfo.email && (
+                <p>Email: <a href={`mailto:${contactInfo.email}`} className="text-blue-600 hover:underline">{contactInfo.email}</a></p>
+              )}
+              {contactInfo.phone && (
+                <p>Telefon: <a href={`tel:${contactInfo.phone}`} className="text-blue-600 hover:underline">{contactInfo.phone}</a></p>
+              )}
+              </div>
+          )}
         </div>
       </div>
     </div>

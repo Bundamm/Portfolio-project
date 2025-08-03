@@ -18,7 +18,6 @@ namespace PortfolioWebApp.Server.Controllers
             _aboutMeRepository = aboutMeRepository;
         }
         [HttpGet("{id:int}")]
-        [Authorize]
         public async Task<ActionResult<AboutMe>> GetById(int id)
         {
             var aboutMe = await _aboutMeRepository.GetByIdAsync(id);
