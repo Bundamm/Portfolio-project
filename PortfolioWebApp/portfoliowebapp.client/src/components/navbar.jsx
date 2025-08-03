@@ -8,11 +8,10 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
+    NavigationMenuProvider,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-// Add custom styles to ensure dropdown appears above other elements
-import "./navbar.css";
 
 function Navbar() {
     const [projects, setProjects] = useState([]);
@@ -34,51 +33,60 @@ function Navbar() {
     }, []);
 
     return (
-        <NavigationMenu viewport={false} className="max-w-screen-xl mx-auto navbar-custom">
-            <NavigationMenuList>
-                <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                        <NavLink to="/about">
-                            O mnie
+        <NavigationMenuProvider>
+            <NavigationMenu 
+                viewport={false} 
+                isFixed={true} 
+                className="z-50"
+            >
+                {/* Centered Navigation */}
+                <NavigationMenuList className="hidden md:flex justify-center flex-1">
+                    <NavigationMenuItem mobileVisible={true}>
+                        <NavigationMenuLink asChild>
+                            <NavLink to="/about">
+                                O mnie
+                            </NavLink>
+                        </NavigationMenuLink>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem mobileVisible={true}>
+                        <NavLink to="/projects">
+                            <NavigationMenuTrigger>Moje projekty</NavigationMenuTrigger>
                         </NavLink>
-                    </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                    <NavLink to="/projects">
-                        <NavigationMenuTrigger>Moje projekty</NavigationMenuTrigger>
-                    </NavLink>
-                    <NavigationMenuContent>
-                        <ul className="grid w-[450px] grid-cols-2 gap-3 p-4">
-                            {loading ? (
-                                <li className="text-sm text-gray-500 py-2 col-span-2">Ładowanie projektów...</li>
-                            ) : projects.length > 0 ? (
-                                projects.map(project => (
-                                    <li key={project.id}>
-                                        <NavigationMenuLink asChild>
-                                            <NavLink 
-                                                to={`/project/${project.id}`}
-                                                className="block py-2 px-3 rounded-md hover:bg-gray-100"
-                                            >
-                                                {project.name}
-                                            </NavLink>
-                                        </NavigationMenuLink>
-                                    </li>
-                                ))
-                            ) : (
-                                <li className="text-sm text-gray-500 py-2 col-span-2">Brak dostępnych projektów</li>
-                            )}
-                        </ul>
-                    </NavigationMenuContent>                    
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                        <NavLink to="/contact">
-                            Kontakt
-                        </NavLink>
-                    </NavigationMenuLink>
-                </NavigationMenuItem>
-            </NavigationMenuList>
-        </NavigationMenu>
+                        <NavigationMenuContent>
+                            <ul className="grid w-[450px] grid-cols-2 gap-3 p-4">
+                                {loading ? (
+                                    <li className="text-sm text-gray-500 py-2 col-span-2">Ładowanie projektów...</li>
+                                ) : projects.length > 0 ? (
+                                    projects.map(project => (
+                                        <li key={project.id}>
+                                            <NavigationMenuLink asChild>
+                                                <NavLink 
+                                                    to={`/project/${project.id}`}
+                                                    className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                                                >
+                                                    {project.name}
+                                                </NavLink>
+                                            </NavigationMenuLink>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="text-sm text-gray-500 py-2 col-span-2">Brak dostępnych projektów</li>
+                                )}
+                            </ul>
+                        </NavigationMenuContent>                    
+                    </NavigationMenuItem>
+                    <NavigationMenuItem mobileVisible={true}>
+                        <NavigationMenuLink asChild>
+                            <NavLink to="/contact">
+                                Kontakt
+                            </NavLink>
+                        </NavigationMenuLink>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+
+                {/* For mobile, the hamburger button and menu is handled by the NavigationMenu component */}
+            </NavigationMenu>
+        </NavigationMenuProvider>
     )
 }
 
