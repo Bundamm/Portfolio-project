@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { projectsApi } from "../services/api";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -6,44 +8,71 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
+// Add custom styles to ensure dropdown appears above other elements
+import "./navbar.css";
+
 function Navbar() {
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const data = await projectsApi.getAll();
+                setProjects(data);
+            } catch (error) {
+                console.error("Failed to fetch projects for navbar:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProjects();
+    }, []);
+
     return (
-        <NavigationMenu viewport={false} className="max-w-screen-xl mx-auto">
+        <NavigationMenu viewport={false} className="max-w-screen-xl mx-auto navbar-custom">
             <NavigationMenuList>
                 <NavigationMenuItem>
                     <NavigationMenuLink asChild>
-                        <NavLink 
-                            to="/about" 
-                            className={({ isActive }) => isActive ? "font-bold" : ""}
-                        >
+                        <NavLink to="/about">
                             O mnie
                         </NavLink>
                     </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger>Moje projekty</NavigationMenuTrigger>
+                    <NavLink to="/projects">
+                        <NavigationMenuTrigger>Moje projekty</NavigationMenuTrigger>
+                    </NavLink>
                     <NavigationMenuContent>
-                        <div className="flex flex-col gap-2 p-4 w-[200px]">
-                            <NavigationMenuLink asChild>
-                                <NavLink 
-                                    to="/projects" 
-                                    className={({ isActive }) => isActive ? "font-bold" : ""}
-                                >
-                                    Wszystkie projekty
-                                </NavLink>
-                            </NavigationMenuLink>
-                            {/* You can add specific project links here later */}
-                        </div>
+                        <ul className="grid w-[450px] grid-cols-2 gap-3 p-4">
+                            {loading ? (
+                                <li className="text-sm text-gray-500 py-2 col-span-2">Ładowanie projektów...</li>
+                            ) : projects.length > 0 ? (
+                                projects.map(project => (
+                                    <li key={project.id}>
+                                        <NavigationMenuLink asChild>
+                                            <NavLink 
+                                                to={`/project/${project.id}`}
+                                                className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                                            >
+                                                {project.name}
+                                            </NavLink>
+                                        </NavigationMenuLink>
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-sm text-gray-500 py-2 col-span-2">Brak dostępnych projektów</li>
+                            )}
+                        </ul>
                     </NavigationMenuContent>                    
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                     <NavigationMenuLink asChild>
-                        <NavLink 
-                            to="/contact" 
-                            className={({ isActive }) => isActive ? "font-bold" : ""}
-                        >
+                        <NavLink to="/contact">
                             Kontakt
                         </NavLink>
                     </NavigationMenuLink>

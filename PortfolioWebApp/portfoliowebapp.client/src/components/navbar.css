@@ -1,0 +1,27 @@
+/* Custom styles for navbar to ensure proper z-index stacking */
+.navbar-custom {
+  position: relative;
+  z-index: 50; /* Higher z-index to ensure dropdown appears above other elements */
+}
+
+/* Target the NavigationMenuContent to ensure proper layering */
+[data-radix-navigation-menu-content] {
+  z-index: 50;
+}
+
+/* Ensure dropdown content is visible above AspectRatio components */
+.navbar-custom [data-state="open"] > [data-radix-navigation-menu-content] {
+  animation: none;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Style improvements for navigation items */
+.navbar-custom a {
+  transition: all 0.2s ease;
+}
+
+/* Fix for dropdown shadows */
+.navbar-custom [role="menuitem"] {
+  position: relative;
+}
