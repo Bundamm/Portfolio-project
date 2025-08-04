@@ -1,3 +1,6 @@
+using PortfolioWebApp.Server.DTO.Experience;
+using PortfolioWebApp.Server.DTO.Skills;
+
 namespace PortfolioWebApp.Server.DTO.AboutMe;
 
 public class AboutMeDto
@@ -7,5 +10,8 @@ public class AboutMeDto
     public string? Description { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
+
+    public List<ExperienceDto> Experiences { get; set; } = new();
+    public List<SkillDto> Skills { get; set; } = new();
 
 }

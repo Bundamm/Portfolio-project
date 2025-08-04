@@ -9,6 +9,9 @@ namespace PortfolioWebApp.Server.Models
         public string? Description { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
+
+        public List<Experience> Experiences { get; set; } = new();
+        public List<Skill> Skills { get; set; } = new();
     }
 }
 

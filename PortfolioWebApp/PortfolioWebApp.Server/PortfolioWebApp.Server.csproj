@@ -54,6 +54,7 @@
     <Folder Include="DTO\Contact\" />
     <Folder Include="DTO\Project\" />
     <Folder Include="DTO\Pdf\" />
+    <Folder Include="dto\Skills\" />
     <Folder Include="Helpers\" />
     <Folder Include="Service\" />
   </ItemGroup>

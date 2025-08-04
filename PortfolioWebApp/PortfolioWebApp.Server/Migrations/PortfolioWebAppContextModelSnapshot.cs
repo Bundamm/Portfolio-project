@@ -185,7 +185,7 @@ namespace PortfolioWebApp.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AboutMe");
+                    b.ToTable("AboutMe", (string)null);
                 });
 
             modelBuilder.Entity("PortfolioWebApp.Server.Models.Category", b =>
@@ -204,7 +204,7 @@ namespace PortfolioWebApp.Server.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("PortfolioWebApp.Server.Models.Image", b =>
@@ -226,7 +226,7 @@ namespace PortfolioWebApp.Server.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("PortfolioWebApp.Server.Models.Pdf", b =>
@@ -252,7 +252,7 @@ namespace PortfolioWebApp.Server.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Pdfs");
+                    b.ToTable("Pdfs", (string)null);
                 });
 
             modelBuilder.Entity("PortfolioWebApp.Server.Models.Project", b =>
@@ -277,7 +277,7 @@ namespace PortfolioWebApp.Server.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("PortfolioWebApp.Server.Models.User", b =>
