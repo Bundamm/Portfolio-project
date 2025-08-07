@@ -10,14 +10,14 @@ namespace PortfolioWebApp.Server.Data
     {
         public PortfolioWebAppContext(DbContextOptions<PortfolioWebAppContext> options) : base(options) { }
 
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<Image> Images { get; set; }
-        public DbSet<Pdf> Pdfs { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<AboutMe> AboutMe {  get; set; }
-        public DbSet<Experience> Experiences { get; set; }
+        public DbSet<Project>? Projects { get; set; }
+        public DbSet<Image>? Images { get; set; }
+        public DbSet<Pdf>? Pdfs { get; set; }
+        public DbSet<Category>? Categories { get; set; }
+        public DbSet<AboutMe>? AboutMe {  get; set; }
+        public DbSet<Experience>? Experiences { get; set; }
 
-        public DbSet<Skill> Skills { get; set; }
+        public DbSet<Skill>? Skills { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -28,10 +28,8 @@ namespace PortfolioWebApp.Server.Data
 {
             new IdentityRole
             {
-             Id = "46da64d9-d9f3-45dd-9abf-7ead12ba3a87", //Brute force for migration
              Name = "Admin",
-            NormalizedName = "ADMIN",
-            ConcurrencyStamp = "a1b2c3d4" 
+            NormalizedName = "ADMIN"
             }
 };
 
