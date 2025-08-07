@@ -76,7 +76,7 @@ function Projects() {
                       />
                       
                       {/* Dark overlay for better text visibility */}
-                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
                         <h2 className="text-2xl md:text-3xl font-bold text-white text-center px-4">{project.name}</h2>
                       </div>
                     </>

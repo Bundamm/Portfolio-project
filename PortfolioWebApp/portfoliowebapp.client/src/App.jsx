@@ -11,7 +11,7 @@ function App() {
     return (
         <BrowserRouter>
             <div className="min-h-svh flex flex-col">
-                <header className="p-4 border-b">
+                <header>
                     <Navbar />
                 </header>
                 <main className="flex-grow">
