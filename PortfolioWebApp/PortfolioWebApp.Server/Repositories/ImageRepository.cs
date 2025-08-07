@@ -54,6 +54,7 @@ namespace PortfolioWebApp.Server.Repositories
                 return null;
             }
             existingImage.ImagePath = imageModel.ImagePath;
+            existingImage.IsMain = imageModel.IsMain;
             await _context.SaveChangesAsync();
             return existingImage;
 
