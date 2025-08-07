@@ -13,6 +13,7 @@ namespace PortfolioWebApp.Server.Mappers
             {
                 Id = imageModel.ImageId,
                 Path = imageModel.ImagePath,
+                IsMain = imageModel.IsMain,
                 ProjectId = imageModel.ProjectId
             };
         }
@@ -21,7 +22,8 @@ namespace PortfolioWebApp.Server.Mappers
             return new Image
             {
                 ImagePath = imageDto.Path,
-                ProjectId = projectId
+                ProjectId = projectId,
+                IsMain = imageDto.IsMain
             };
         }
 
@@ -29,7 +31,8 @@ namespace PortfolioWebApp.Server.Mappers
         {
             return new Image
             {
-                ImagePath = imageDto.Path
+                ImagePath = imageDto.Path,
+                IsMain = imageDto.IsMain
             };
         }
     }
