@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { getContactInfo } from "../services/api/aboutMeApi";
+import { getContactInfo, sendContactEmail } from "../services/api";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +24,9 @@ const contactFormSchema = z.object({
   }),
   email: z.string().email({
     message: "Proszę podać poprawny adres email.",
+  }),
+  subject: z.string().min(3, {
+    message: "Temat musi mieć co najmniej 3 znaki.",
   }),
   message: z.string().min(10, {
     message: "Wiadomość musi mieć co najmniej 10 znaków.",
@@ -63,6 +66,7 @@ function Contact() {
     defaultValues: {
       name: "",
       email: "",
+      subject: "",
       message: "",
     },
   });
@@ -72,10 +76,8 @@ function Contact() {
     setSubmitResult(null);
     
     try {
-      // Simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      console.log('Form submitted:', data);
+      // Send the contact email using the API
+      await sendContactEmail(data);
       
       // Reset form after successful submission
       form.reset();
@@ -135,6 +137,20 @@ function Contact() {
             
             <FormField
               control={form.control}
+              name="subject"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Temat</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Temat wiadomości" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
               name="message"
               render={({ field }) => (
                 <FormItem>
@@ -175,7 +191,7 @@ function Contact() {
               {contactInfo.phone && (
                 <p>Telefon: <a href={`tel:${contactInfo.phone}`} className="text-blue-600 hover:underline">{contactInfo.phone}</a></p>
               )}
-              </div>
+            </div>
           )}
         </div>
       </div>

@@ -15,3 +15,4 @@ export { imageApi } from './imageApi';
 export { pdfApi } from './pdfApi';
 export { skillsApi } from './skillsApi';
 export { experienceApi } from './experienceApi';
+export { sendContactEmail } from './mailApi';
