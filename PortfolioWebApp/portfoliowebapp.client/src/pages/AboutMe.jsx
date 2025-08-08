@@ -1,98 +1,272 @@
 import React, { useState, useEffect } from 'react';
-import { aboutMeApi } from '../services/api/aboutMeApi';
+import { aboutMeApi, skillsApi, experienceApi } from '../services/api';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { CalendarIcon, BriefcaseIcon } from "lucide-react";
 
 function AboutMe() {
+  // State for different data sources
   const [aboutMeData, setAboutMeData] = useState({
     title: '',
-    description: '',
+    description: '', // Using correct property name from AboutMeDto
     phone: null,
     email: null
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [skills, setSkills] = useState([]);
+  const [experiences, setExperiences] = useState([]);
+  
+  // Loading and error states
+  const [loadingStates, setLoadingStates] = useState({
+    aboutMe: true,
+    skills: true,
+    experiences: true
+  });
+  const [errors, setErrors] = useState({
+    aboutMe: null,
+    skills: null,
+    experiences: null
+  });
 
+  // Helper to update loading state for a specific data type
+  const setLoading = (type, isLoading) => {
+    setLoadingStates(prev => ({ ...prev, [type]: isLoading }));
+  };
+
+  // Helper to update error state for a specific data type
+  const setError = (type, error) => {
+    setErrors(prev => ({ ...prev, [type]: error }));
+  };
+
+  // Fetch AboutMe data
   useEffect(() => {
     const fetchAboutMeData = async () => {
       try {
-        setLoading(true);
+        setLoading('aboutMe', true);
         const data = await aboutMeApi.getById(1);
         setAboutMeData(data);
-        setLoading(false);
+        
+        // Also fetch experiences related to this AboutMe entry
+        try {
+          setLoading('experiences', true);
+          const experienceData = await experienceApi.getByAboutMeId(data.id);
+          setExperiences(experienceData || []);
+        } catch (err) {
+          console.error("Error fetching experience data:", err);
+          setError('experiences', "Nie udało się pobrać doświadczenia zawodowego.");
+        } finally {
+          setLoading('experiences', false);
+        }
       } catch (err) {
         console.error("Error fetching AboutMe data:", err);
-        setError("Nie udało się pobrać danych.");
-        setLoading(false);
+        setError('aboutMe', "Nie udało się pobrać danych profilu.");
+      } finally {
+        setLoading('aboutMe', false);
       }
     };
 
     fetchAboutMeData();
   }, []);
 
-  if (loading) {
+  // Fetch skills
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        setLoading('skills', true);
+        const data = await skillsApi.getAll();
+        setSkills(data || []);
+      } catch (err) {
+        console.error("Error fetching skills data:", err);
+        setError('skills', "Nie udało się pobrać umiejętności.");
+      } finally {
+        setLoading('skills', false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  // Format date to a readable format
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Obecnie';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pl-PL', { 
+      year: 'numeric', 
+      month: 'long'
+    });
+  };
+
+  // Check if all essential data is loading
+  const isLoading = loadingStates.aboutMe;
+
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-16">
         <h1 className="text-3xl font-bold mb-6">O mnie</h1>
-        <p>Ładowanie danych...</p>
+        <div className="flex items-center space-x-4">
+          <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p>Ładowanie danych...</p>
+        </div>
       </div>
     );
   }
 
-  if (error) {
+  const hasErrors = errors.aboutMe;
+  
+  if (hasErrors) {
     return (
       <div className="container mx-auto px-4 py-16">
         <h1 className="text-3xl font-bold mb-6">O mnie</h1>
-        <p className="text-red-600">{error}</p>
+        <p className="text-red-600">{errors.aboutMe}</p>
       </div>
     );
   }
+
+  // Sort experiences by startDate in descending order (newest first)
+  const sortedExperiences = [...experiences].sort((a, b) => {
+    const dateA = a.endDate ? new Date(a.endDate) : new Date();
+    const dateB = b.endDate ? new Date(b.endDate) : new Date();
+    return dateB - dateA;
+  });
 
   return (
     <div className="container mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-6">{aboutMeData.title || 'O mnie'}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          {aboutMeData.description ? (
-            <div dangerouslySetInnerHTML={{ __html: aboutMeData.description }} />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main content - about me description */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profil</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {aboutMeData.description ? (
+                <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: aboutMeData.description }} />
+              ) : (
+                <>
+                  <p className="mb-4">
+                    Witaj na mojej stronie portfolio! Jestem profesjonalnym programistą z pasją do
+                    tworzenia nowoczesnych i wydajnych aplikacji webowych.
+                  </p>
+                  <p className="mb-4">
+                    Specjalizuję się w technologiach takich jak React, .NET, i tworzeniu
+                    aplikacji full-stack.
+                  </p>
+                  <p>
+                    Zawsze dążę do pisania czystego, utrzymywalnego kodu i tworzenia
+                    aplikacji, które są nie tylko funkcjonalne, ale również przyjazne dla użytkownika.
+                  </p>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Experience section */}
+          <h2 className="text-2xl font-bold mt-10 mb-6 flex items-center">
+            <BriefcaseIcon className="mr-2" size={24} />
+            Doświadczenie
+          </h2>
+          
+          {loadingStates.experiences ? (
+            <div className="flex items-center space-x-4">
+              <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <p>Ładowanie doświadczenia...</p>
+            </div>
+          ) : errors.experiences ? (
+            <p className="text-red-600">{errors.experiences}</p>
+          ) : sortedExperiences.length === 0 ? (
+            <p className="text-muted-foreground">Brak informacji o doświadczeniu zawodowym.</p>
           ) : (
-            <>
-              <p className="mb-4">
-                Witaj na mojej stronie portfolio! Jestem profesjonalnym programistą z pasją do
-                tworzenia nowoczesnych i wydajnych aplikacji webowych.
-              </p>
-              <p className="mb-4">
-                Specjalizuję się w technologiach takich jak React, .NET, i tworzeniu
-                aplikacji full-stack.
-              </p>
-              <p>
-                Zawsze dążę do pisania czystego, utrzymywalnego kodu i tworzenia
-                aplikacji, które są nie tylko funkcjonalne, ale również przyjazne dla użytkownika.
-              </p>
-            </>
+            <div className="space-y-6">
+              {sortedExperiences.map((exp) => (
+                <Card key={exp.id || Math.random()}>
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        {/* Using workplace as title */}
+                        <CardTitle>{exp.workplace}</CardTitle>
+                        {/* Add job position or type if needed in future */}
+                        <CardDescription className="text-lg">Pozycja</CardDescription>
+                      </div>
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <CalendarIcon size={14} />
+                        <span>{formatDate(exp.startDate)} - {formatDate(exp.endDate)}</span>
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Using workDescription property from Experience DTO */}
+                    {exp.workDescription && (
+                      <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: exp.workDescription }} />
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
         </div>
-        <div className="bg-gray-100 p-6 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Umiejętności</h2>
-          <ul className="list-disc pl-5 space-y-2">
-            <li>React, Redux</li>
-            <li>ASP.NET Core</li>
-            <li>JavaScript/TypeScript</li>
-            <li>Tailwind CSS</li>
-            <li>SQL Server</li>
-            <li>Azure/AWS</li>
-          </ul>
+        
+        {/* Sidebar with skills and contact */}
+        <div>
+          {/* Skills section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Umiejętności</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loadingStates.skills ? (
+                <div className="flex items-center space-x-4">
+                  <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <p>Ładowanie umiejętności...</p>
+                </div>
+              ) : errors.skills ? (
+                <p className="text-red-600">{errors.skills}</p>
+              ) : skills.length === 0 ? (
+                <div className="space-y-2">
+                  <Badge className="mr-2">React</Badge>
+                  <Badge className="mr-2">ASP.NET Core</Badge>
+                  <Badge className="mr-2">JavaScript</Badge>
+                  <Badge className="mr-2">TypeScript</Badge>
+                  <Badge className="mr-2">Tailwind CSS</Badge>
+                  <Badge className="mr-2">SQL Server</Badge>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {skills.map((skill) => (
+                    <Badge key={skill.id || Math.random()}>
+                      {skill.name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
           
+          {/* Contact section (if available) */}
           {(aboutMeData.email || aboutMeData.phone) && (
-            <>
-              <h2 className="text-xl font-semibold mt-6 mb-4">Kontakt</h2>
-              <div className="space-y-1">
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Kontakt</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
                 {aboutMeData.email && (
-                  <p>Email: <a href={`mailto:${aboutMeData.email}`} className="text-blue-600 hover:underline">{aboutMeData.email}</a></p>
+                  <div>
+                    <strong>Email:</strong>{' '}
+                    <a href={`mailto:${aboutMeData.email}`} className="text-primary hover:underline">
+                      {aboutMeData.email}
+                    </a>
+                  </div>
                 )}
                 {aboutMeData.phone && (
-                  <p>Telefon: <a href={`tel:${aboutMeData.phone}`} className="text-blue-600 hover:underline">{aboutMeData.phone}</a></p>
+                  <div>
+                    <strong>Telefon:</strong>{' '}
+                    <a href={`tel:${aboutMeData.phone}`} className="text-primary hover:underline">
+                      {aboutMeData.phone}
+                    </a>
+                  </div>
                 )}
-              </div>
-            </>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
