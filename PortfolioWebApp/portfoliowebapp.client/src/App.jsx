@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/navbar';
+import NavbarMobile from '@/components/navbar-mobile';
 import AboutMe from '@/pages/AboutMe';
 import Projects from '@/pages/Projects';
 import Project from '@/pages/Project';
@@ -12,7 +13,17 @@ function App() {
         <BrowserRouter>
             <div className="min-h-svh flex flex-col">
                 <header>
-                    <Navbar />
+                    {/* Desktop Navbar - hidden on mobile */}
+                    <div className="hidden md:block">
+                        <Navbar />
+                    </div>
+                    
+                    {/* Mobile Navbar - only visible on small screens */}
+                    <div className="md:hidden">
+                        <NavbarMobile />
+                        {/* Spacer to prevent content from being hidden under fixed header */}
+                        <div className="h-16"></div>
+                    </div>
                 </header>
                 <main className="flex-grow">
                     <Routes>

@@ -51,7 +51,7 @@ function Projects() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-12 text-center">My Projects</h1>
       
       <div className="space-y-24">

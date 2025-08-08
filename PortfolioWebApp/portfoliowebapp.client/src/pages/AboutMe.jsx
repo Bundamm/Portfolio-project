@@ -30,7 +30,7 @@ function AboutMe() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-16">
         <h1 className="text-3xl font-bold mb-6">O mnie</h1>
         <p>Ładowanie danych...</p>
       </div>
@@ -39,7 +39,7 @@ function AboutMe() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-16">
         <h1 className="text-3xl font-bold mb-6">O mnie</h1>
         <p className="text-red-600">{error}</p>
       </div>
@@ -47,7 +47,7 @@ function AboutMe() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-6">{aboutMeData.title || 'O mnie'}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>

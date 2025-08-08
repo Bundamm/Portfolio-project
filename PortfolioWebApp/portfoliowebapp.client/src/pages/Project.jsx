@@ -58,7 +58,7 @@ function Project() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-16">
       {/* Back button */}
       <div className="mb-8">
         <Button asChild variant="ghost" className="flex items-center gap-2">

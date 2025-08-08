@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
-import { ChevronDownIcon, Menu } from "lucide-react"
+import { ChevronDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Link } from "react-router-dom"
@@ -13,8 +13,6 @@ function NavigationMenu({
   isFixed = false,
   ...props
 }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  
   return (
     <NavigationMenuPrimitive.Root
       data-slot="navigation-menu"
@@ -43,50 +41,15 @@ function NavigationMenu({
           
           {/* Right side - Empty or additional controls */}
           <div className="w-1/4 flex justify-end">
-            {/* Mobile menu button */}
-            <div className="block md:hidden">
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 rounded-md hover:bg-accent/50"
-              >
-                <Menu className="size-4" />
-              </button>
-            </div>
+            {/* Empty space for layout balance */}
           </div>
         </div>
       </div>
-      
-      {isMobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full mt-2 p-3 bg-background/80 backdrop-blur-lg rounded-lg shadow-lg md:hidden">
-          {/* Mobile menu content is passed via context to avoid prop drilling */}
-          <NavigationMobilePrimitive.Slot />
-        </div>
-      )}
       
       {viewport && <NavigationMenuViewport />}
     </NavigationMenuPrimitive.Root>
   );
 }
-
-// Context to manage mobile menu items
-const NavigationMobileContext = React.createContext({
-  registerMobileItem: () => {},
-  mobileItems: []
-});
-
-const NavigationMobilePrimitive = {
-  Slot: () => {
-    const { mobileItems } = React.useContext(NavigationMobileContext);
-    
-    return (
-      <div className="flex flex-col space-y-2">
-        {mobileItems.map((item, index) => (
-          <div key={index}>{item}</div>
-        ))}
-      </div>
-    );
-  }
-};
 
 function NavigationMenuList({
   className,
@@ -103,18 +66,8 @@ function NavigationMenuList({
 function NavigationMenuItem({
   className,
   children,
-  mobileVisible = true,
   ...props
 }) {
-  const { registerMobileItem } = React.useContext(NavigationMobileContext);
-  
-  // Register this item for mobile menu if needed
-  React.useEffect(() => {
-    if (mobileVisible) {
-      registerMobileItem(children);
-    }
-  }, [mobileVisible, children, registerMobileItem]);
-  
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
@@ -125,10 +78,6 @@ function NavigationMenuItem({
   );
 }
 
-const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/50 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=open]:hover:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:focus:bg-accent data-[state=open]:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1"
-)
-
 function NavigationMenuTrigger({
   className,
   children,
@@ -137,7 +86,10 @@ function NavigationMenuTrigger({
   return (
     <NavigationMenuPrimitive.Trigger
       data-slot="navigation-menu-trigger"
-      className={cn(navigationMenuTriggerStyle(), "group", className)}
+      className={cn(
+        "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/50 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=open]:hover:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:focus:bg-accent data-[state=open]:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1",
+        "group", className
+      )}
       {...props}>
       {children}{" "}
       <ChevronDownIcon
@@ -205,29 +157,12 @@ function NavigationMenuIndicator({
     <NavigationMenuPrimitive.Indicator
       data-slot="navigation-menu-indicator"
       className={cn(
-        "data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden",
+        "data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]",
         className
       )}
       {...props}>
-      <div
-        className="bg-border relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm shadow-md" />
+      <div className="relative top-[60%] size-2 rotate-45 rounded-tl-sm bg-border shadow-md" />
     </NavigationMenuPrimitive.Indicator>
-  );
-}
-
-// Provider component to handle mobile menu items
-function NavigationMenuProvider({ children }) {
-  const [mobileItems, setMobileItems] = React.useState([]);
-  
-  const registerMobileItem = React.useCallback((item) => {
-    setMobileItems(prev => [...prev, item]);
-    return () => setMobileItems(prev => prev.filter(i => i !== item));
-  }, []);
-  
-  return (
-    <NavigationMobileContext.Provider value={{ mobileItems, registerMobileItem }}>
-      {children}
-    </NavigationMobileContext.Provider>
   );
 }
 
@@ -240,6 +175,4 @@ export {
   NavigationMenuLink,
   NavigationMenuIndicator,
   NavigationMenuViewport,
-  NavigationMenuProvider,
-  navigationMenuTriggerStyle,
 }

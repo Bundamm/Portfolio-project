@@ -8,8 +8,6 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
-    NavigationMenuProvider,
-    navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
 
@@ -33,7 +31,6 @@ function Navbar() {
     }, []);
 
     return (
-        <NavigationMenuProvider>
             <NavigationMenu 
                 viewport={false} 
                 isFixed={true} 
@@ -41,14 +38,14 @@ function Navbar() {
             >
                 {/* Centered Navigation */}
                 <NavigationMenuList className="hidden md:flex justify-center flex-1">
-                    <NavigationMenuItem mobileVisible={true}>
+                    <NavigationMenuItem>
                         <NavigationMenuLink asChild>
                             <NavLink to="/about">
                                 O mnie
                             </NavLink>
                         </NavigationMenuLink>
                     </NavigationMenuItem>
-                    <NavigationMenuItem mobileVisible={true}>
+                    <NavigationMenuItem>
                         <NavLink to="/projects">
                             <NavigationMenuTrigger>Moje projekty</NavigationMenuTrigger>
                         </NavLink>
@@ -75,7 +72,7 @@ function Navbar() {
                             </ul>
                         </NavigationMenuContent>                    
                     </NavigationMenuItem>
-                    <NavigationMenuItem mobileVisible={true}>
+                    <NavigationMenuItem>
                         <NavigationMenuLink asChild>
                             <NavLink to="/contact">
                                 Kontakt
@@ -83,10 +80,7 @@ function Navbar() {
                         </NavigationMenuLink>
                     </NavigationMenuItem>
                 </NavigationMenuList>
-
-                {/* For mobile, the hamburger button and menu is handled by the NavigationMenu component */}
             </NavigationMenu>
-        </NavigationMenuProvider>
     )
 }
 
