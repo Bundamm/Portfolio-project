@@ -2,11 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { projectsApi } from "../services/api";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import EditButton from '../components/admin/EditButton';
+import AddButton from '../components/admin/AddButton';
+import EditProjectDialog from '../components/admin/EditProjectDialog';
+import { useAdmin } from '../contexts/AdminContext';
 
 function Projects() {
+  const { isAdmin, logout } = useAdmin();
+  
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Admin dialog states
+  const [editProjectOpen, setEditProjectOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+  const [isNewProject, setIsNewProject] = useState(false);
   
   useEffect(() => {
     const fetchProjects = async () => {
@@ -23,6 +35,29 @@ function Projects() {
     
     fetchProjects();
   }, []);
+
+  // Admin handlers
+  const handleProjectSave = (savedProject) => {
+    if (isNewProject) {
+      setProjects(prev => [...prev, savedProject]);
+    } else {
+      setProjects(prev => 
+        prev.map(project => 
+          project.id === savedProject.id ? savedProject : project
+        )
+      );
+    }
+  };
+
+  const handleProjectDelete = (deletedId) => {
+    setProjects(prev => prev.filter(project => project.id !== deletedId));
+  };
+
+  const openEditProject = (project = null) => {
+    setEditingProject(project);
+    setIsNewProject(!project);
+    setEditProjectOpen(true);
+  };
 
   if (loading) {
     return (
@@ -52,7 +87,26 @@ function Projects() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-12 text-center">My Projects</h1>
+      <div className="flex justify-between items-center mb-12">
+        <h1 className="text-3xl font-bold">My Projects</h1>
+        <div className="flex items-center gap-4">
+          {isAdmin && (
+            <>
+              <AddButton onClick={() => openEditProject()} size="sm">
+                Dodaj Projekt
+              </AddButton>
+              <Button 
+                variant="outline" 
+                onClick={logout}
+                className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Admin Logout
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
       
       <div className="space-y-24">
         {projectsToDisplay.map((project, index) => {
@@ -89,11 +143,19 @@ function Projects() {
               </div>
               
               {/* Project Details */}
-              <div className="w-full md:w-1/2">
+              <div className="w-full md:w-1/2 relative">
+                {isAdmin && (
+                  <EditButton 
+                    onClick={() => openEditProject(project)}
+                    className="absolute top-0 right-0"
+                    size="icon"
+                    showText={false}
+                  />
+                )}
                 <h2 className="text-2xl font-bold mb-4">{project.name}</h2>
                 <p className="text-gray-700 mb-6">{project.description}</p>
                 
-                <div className="flex gap-4">
+                <div className="flex justify-center">
                   <Button asChild>
                     <Link to={`/project/${project.id}`}>
                       View Details
@@ -105,6 +167,16 @@ function Projects() {
           );
         })}
       </div>
+
+      {/* Admin Dialog */}
+      <EditProjectDialog
+        open={editProjectOpen}
+        onOpenChange={setEditProjectOpen}
+        data={editingProject}
+        isNew={isNewProject}
+        onSave={handleProjectSave}
+        onDelete={handleProjectDelete}
+      />
     </div>
   );
 }

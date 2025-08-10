@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { projectsApi } from '../services/api';
 import { Button } from '../components/ui/button';
 import { AspectRatio } from '../components/ui/aspect-ratio';
@@ -10,13 +10,22 @@ import {
   CarouselPrevious, 
   CarouselNext 
 } from '../components/ui/carousel';
-import { ChevronLeft, FileText } from 'lucide-react';
+import { ChevronLeft, FileText, LogOut } from 'lucide-react';
+import EditButton from '../components/admin/EditButton';
+import EditProjectDialog from '../components/admin/EditProjectDialog';
+import { useAdmin } from '../contexts/AdminContext';
 
 function Project() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAdmin, logout } = useAdmin();
+  
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Admin dialog states
+  const [editProjectOpen, setEditProjectOpen] = useState(false);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -35,6 +44,16 @@ function Project() {
       fetchProject();
     }
   }, [id]);
+
+  // Admin handlers
+  const handleProjectSave = (savedProject) => {
+    setProject(savedProject);
+  };
+
+  const handleProjectDelete = () => {
+    // Navigate back to projects page after deletion from dialog
+    navigate('/projects');
+  };
 
   if (loading) {
     return (
@@ -70,6 +89,23 @@ function Project() {
 
       {/* Project header with centered description */}
       <div className="mb-12 text-center max-w-3xl mx-auto">
+        {isAdmin && (
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <EditButton 
+              onClick={() => setEditProjectOpen(true)}
+              size="sm"
+            />
+            <Button 
+              variant="outline" 
+              onClick={logout}
+              className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
+              size="sm"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          </div>
+        )}
         <h1 className="text-4xl font-bold mb-6">{project.name}</h1>
         
         {/* Description in aspect ratio container */}
@@ -141,6 +177,16 @@ function Project() {
           </div>
         </div>
       )}
+
+      {/* Admin Dialog */}
+      <EditProjectDialog
+        open={editProjectOpen}
+        onOpenChange={setEditProjectOpen}
+        data={project}
+        isNew={false}
+        onSave={handleProjectSave}
+        onDelete={handleProjectDelete}
+      />
     </div>
   );
 }
