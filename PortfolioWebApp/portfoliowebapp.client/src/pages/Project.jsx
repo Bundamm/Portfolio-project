@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { projectsApi, categoryApi } from '../services/api';
+import { projectsApi, categoryApi, imageApi, pdfApi } from '../services/api';
 import { Button } from '../components/ui/button';
 import { AspectRatio } from '../components/ui/aspect-ratio';
 import { 
@@ -10,9 +10,12 @@ import {
   CarouselPrevious, 
   CarouselNext 
 } from '../components/ui/carousel';
-import { ChevronLeft, FileText, LogOut } from 'lucide-react';
+import { ChevronLeft, FileText, LogOut, Plus, Edit2, Trash2 } from 'lucide-react';
 import EditButton from '../components/admin/EditButton';
+import AddButton from '../components/admin/AddButton';
 import EditProjectDialog from '../components/admin/EditProjectDialog';
+import EditImageDialog from '../components/admin/EditImageDialog';
+import EditPdfDialog from '../components/admin/EditPdfDialog';
 import { useAdmin } from '../contexts/AdminContext';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../components/ui/hover-card';
 
@@ -28,6 +31,12 @@ function Project() {
   
   // Admin dialog states
   const [editProjectOpen, setEditProjectOpen] = useState(false);
+  const [editImageOpen, setEditImageOpen] = useState(false);
+  const [editPdfOpen, setEditPdfOpen] = useState(false);
+  const [editingImage, setEditingImage] = useState(null);
+  const [editingPdf, setEditingPdf] = useState(null);
+  const [isNewImage, setIsNewImage] = useState(false);
+  const [isNewPdf, setIsNewPdf] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +73,54 @@ function Project() {
   // Helper function to get category data by category ID
   const getCategoryById = (categoryId) => {
     return categories.find(category => category.categoryId === categoryId);
+  };
+
+  // Image handlers
+  const handleImageSave = (savedImage) => {
+    setProject(prev => {
+      const updatedImages = isNewImage 
+        ? [...(prev.images || []), savedImage]
+        : (prev.images || []).map(img => img.id === savedImage.id ? savedImage : img);
+      
+      return { ...prev, images: updatedImages };
+    });
+  };
+
+  const handleImageDelete = (deletedId) => {
+    setProject(prev => ({
+      ...prev,
+      images: (prev.images || []).filter(img => img.id !== deletedId)
+    }));
+  };
+
+  const openEditImage = (image = null) => {
+    setEditingImage(image);
+    setIsNewImage(!image);
+    setEditImageOpen(true);
+  };
+
+  // PDF handlers
+  const handlePdfSave = (savedPdf) => {
+    setProject(prev => {
+      const updatedPdfs = isNewPdf 
+        ? [...(prev.pdfs || []), savedPdf]
+        : (prev.pdfs || []).map(pdf => pdf.id === savedPdf.id ? savedPdf : pdf);
+      
+      return { ...prev, pdfs: updatedPdfs };
+    });
+  };
+
+  const handlePdfDelete = (deletedId) => {
+    setProject(prev => ({
+      ...prev,
+      pdfs: (prev.pdfs || []).filter(pdf => pdf.id !== deletedId)
+    }));
+  };
+
+  const openEditPdf = (pdf = null) => {
+    setEditingPdf(pdf);
+    setIsNewPdf(!pdf);
+    setEditPdfOpen(true);
   };
 
   if (loading) {
@@ -154,20 +211,45 @@ function Project() {
       </div>
 
       {/* Project images carousel */}
-      {project.images && project.images.length > 0 && (
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 text-center">Project Images</h2>
+      <div className="mb-16">
+        <div className="flex justify-center items-center gap-4 mb-6">
+          <h2 className="text-2xl font-bold">Project Images</h2>
+          {isAdmin && (
+            <AddButton onClick={() => openEditImage()} size="sm">
+              Add Image
+            </AddButton>
+          )}
+        </div>
+        
+        {project.images && project.images.length > 0 ? (
           <div className="mx-auto max-w-5xl px-12">
             <Carousel opts={{ loop: true }}>
               <CarouselContent>
                 {project.images.map((image) => (
                   <CarouselItem key={image.id}>
                     <div className="relative overflow-hidden rounded-lg border p-1 h-[400px]">
+                      {isAdmin && (
+                        <div className="absolute top-3 right-3 z-10 flex gap-2">
+                          <Button 
+                            size="icon" 
+                            variant="secondary"
+                            onClick={() => openEditImage(image)}
+                            className="h-8 w-8 bg-white/80 hover:bg-white"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
                       <img
                         src={image.path}
                         alt={`${project.name} - Image ${image.id}`}
                         className="h-full w-full object-contain"
                       />
+                      {image.isMain && (
+                        <div className="absolute bottom-3 left-3 bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
+                          Main Image
+                        </div>
+                      )}
                     </div>
                   </CarouselItem>
                 ))}
@@ -176,19 +258,48 @@ function Project() {
               <CarouselNext />
             </Carousel>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="text-center text-gray-500 py-8">
+            <p>No images added yet</p>
+            {isAdmin && (
+              <Button onClick={() => openEditImage()} className="mt-4">
+                Add First Image
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
 
-      {/* Project PDFs cerousel */}
-      {project.pdfs && project.pdfs.length > 0 && (
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 text-center">Documentation</h2>
+      {/* Project PDFs carousel */}
+      <div className="mb-16">
+        <div className="flex justify-center items-center gap-4 mb-6">
+          <h2 className="text-2xl font-bold">Documentation</h2>
+          {isAdmin && (
+            <AddButton onClick={() => openEditPdf()} size="sm">
+              Add PDF
+            </AddButton>
+          )}
+        </div>
+        
+        {project.pdfs && project.pdfs.length > 0 ? (
           <div className="mx-auto max-w-5xl px-12">
             <Carousel opts={{ loop: true }}>
               <CarouselContent>
                 {project.pdfs.map((pdf) => (
                   <CarouselItem key={pdf.id}>
                     <div className="relative overflow-hidden rounded-lg border p-4">
+                      {isAdmin && (
+                        <div className="absolute top-3 right-3 z-10 flex gap-2">
+                          <Button 
+                            size="icon" 
+                            variant="secondary"
+                            onClick={() => openEditPdf(pdf)}
+                            className="h-8 w-8 bg-white/80 hover:bg-white"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
                       <div className="flex flex-col items-center h-[300px] justify-center">
                         <FileText className="h-24 w-24 text-gray-400 mb-4" />
                         <h3 className="text-lg font-medium text-center mb-2">{pdf.name}</h3>
@@ -210,10 +321,19 @@ function Project() {
               <CarouselNext />
             </Carousel>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="text-center text-gray-500 py-8">
+            <p>No PDFs added yet</p>
+            {isAdmin && (
+              <Button onClick={() => openEditPdf()} className="mt-4">
+                Add First PDF
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
 
-      {/* Admin Dialog */}
+      {/* Admin Dialogs */}
       <EditProjectDialog
         open={editProjectOpen}
         onOpenChange={setEditProjectOpen}
@@ -221,6 +341,26 @@ function Project() {
         isNew={false}
         onSave={handleProjectSave}
         onDelete={handleProjectDelete}
+      />
+      
+      <EditImageDialog
+        open={editImageOpen}
+        onOpenChange={setEditImageOpen}
+        data={editingImage}
+        projectId={project?.id}
+        isNew={isNewImage}
+        onSave={handleImageSave}
+        onDelete={handleImageDelete}
+      />
+      
+      <EditPdfDialog
+        open={editPdfOpen}
+        onOpenChange={setEditPdfOpen}
+        data={editingPdf}
+        projectId={project?.id}
+        isNew={isNewPdf}
+        onSave={handlePdfSave}
+        onDelete={handlePdfDelete}
       />
     </div>
   );
