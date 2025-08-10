@@ -13,5 +13,4 @@ public class UpdateProjectDto
     public string? Description { get; set; }
     [Required]
     public int CategoryId { get; set; }
-    public int UserId { get; set; }
 }

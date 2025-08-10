@@ -11,8 +11,6 @@
             public int CategoryId { get; set; }
             public Category? Category { get; set; }
 
-            // FK for users
-
             public List<Image> Images { get; set; } = new List<Image>();
             public List<Pdf> Pdfs { get; set; } = new List<Pdf>();
         }
