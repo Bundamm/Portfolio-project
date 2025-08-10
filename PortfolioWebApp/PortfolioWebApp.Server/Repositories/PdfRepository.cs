@@ -21,6 +21,17 @@ namespace PortfolioWebApp.Server.Repositories
             {
                 throw new Exception("The project by the id in the model doesnt exist.");
             }
+            
+            // Sprawdź czy PDF o tej nazwie już istnieje w projekcie
+            var existingPdf = await _context.Pdfs
+                .FirstOrDefaultAsync(x => x.ProjectId == pdfModel.ProjectId && 
+                                        x.PdfName == pdfModel.PdfName);
+            
+            if (existingPdf != null)
+            {
+                throw new Exception($"PDF with name '{pdfModel.PdfName}' already exists in this project.");
+            }
+            
             pdfModel.Project = project;
             await _context.Pdfs.AddAsync(pdfModel);
             await _context.SaveChangesAsync();
