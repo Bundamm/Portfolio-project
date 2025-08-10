@@ -6,7 +6,7 @@ using PortfolioWebApp.Server.Repositories;
 
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/projects")]
 public class ProjectsController : ControllerBase
 {
     private readonly IProjectRepository _projectRepository;
