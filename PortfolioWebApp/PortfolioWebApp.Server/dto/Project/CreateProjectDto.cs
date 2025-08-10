@@ -11,6 +11,4 @@ public class CreateProjectDto
     [Required]
     [MinLength(10, ErrorMessage = "Description must be at least 5 characters long.")]
     public string? Description { get; set; }
-    [Required]
-    public int UserId { get; set; }
 }
