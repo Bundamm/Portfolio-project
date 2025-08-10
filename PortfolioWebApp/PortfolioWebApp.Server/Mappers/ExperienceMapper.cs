@@ -9,6 +9,7 @@ namespace PortfolioWebApp.Server.Mappers
         {
             return new ExperienceDto
             {
+                Id = experience.Id,
                 StartDate = experience.StartDate,
                 EndDate = experience.EndDate,
                 Workplace = experience.Workplace,
