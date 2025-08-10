@@ -45,10 +45,10 @@ function AboutMe() {
         const data = await aboutMeApi.getById(1);
         setAboutMeData(data);
         
-        // Also fetch experiences related to this AboutMe entry
+        // Fetch all experiences (they will be displayed together)
         try {
           setLoading('experiences', true);
-          const experienceData = await experienceApi.getByAboutMeId(data.id);
+          const experienceData = await experienceApi.getAll();
           setExperiences(experienceData || []);
         } catch (err) {
           console.error("Error fetching experience data:", err);
@@ -123,8 +123,8 @@ function AboutMe() {
 
   // Sort experiences by startDate in descending order (newest first)
   const sortedExperiences = [...experiences].sort((a, b) => {
-    const dateA = a.endDate ? new Date(a.endDate) : new Date();
-    const dateB = b.endDate ? new Date(b.endDate) : new Date();
+    const dateA = new Date(a.startDate);
+    const dateB = new Date(b.startDate);
     return dateB - dateA;
   });
 
@@ -137,7 +137,7 @@ function AboutMe() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Profil</CardTitle>
+              <CardTitle>O mnie</CardTitle>
             </CardHeader>
             <CardContent>
               {aboutMeData.description ? (
@@ -178,26 +178,23 @@ function AboutMe() {
             <p className="text-muted-foreground">Brak informacji o doświadczeniu zawodowym.</p>
           ) : (
             <div className="space-y-6">
-              {sortedExperiences.map((exp) => (
-                <Card key={exp.id || Math.random()}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        {/* Using workplace as title */}
-                        <CardTitle>{exp.workplace}</CardTitle>
-                        {/* Add job position or type if needed in future */}
-                        <CardDescription className="text-lg">Pozycja</CardDescription>
+              {sortedExperiences.map((exp, index) => (
+                <Card key={`${exp.workplace}-${exp.startDate}-${index}`}>
+                  <CardHeader className="text-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <CardTitle className="text-xl font-semibold">{exp.workplace}</CardTitle>
+                      <div className="flex items-center gap-2">
+                        <CalendarIcon size={14} className="text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
+                        </span>
                       </div>
-                      <Badge variant="outline" className="flex items-center gap-1">
-                        <CalendarIcon size={14} />
-                        <span>{formatDate(exp.startDate)} - {formatDate(exp.endDate)}</span>
-                      </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    {/* Using workDescription property from Experience DTO */}
                     {exp.workDescription && (
-                      <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: exp.workDescription }} />
+                      <div className="prose prose-sm max-w-none text-muted-foreground" 
+                           dangerouslySetInnerHTML={{ __html: exp.workDescription }} />
                     )}
                   </CardContent>
                 </Card>
@@ -232,8 +229,8 @@ function AboutMe() {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {skills.map((skill) => (
-                    <Badge key={skill.id || Math.random()}>
+                  {skills.map((skill, index) => (
+                    <Badge key={`${skill.name}-${index}`}>
                       {skill.name}
                     </Badge>
                   ))}

@@ -6,6 +6,19 @@ import { apiRequest } from './apiClient';
  */
 export const experienceApi = {
   /**
+   * Get all experiences
+   * @returns {Promise<Array>} List of all experiences
+   */
+  getAll: async () => {
+    try {
+      return await apiRequest('/api/experience');
+    } catch (error) {
+      console.error('Failed to fetch all experiences:', error);
+      throw error;
+    }
+  },
+
+  /**
    * Get experience by ID
    * @param {number} id - Experience ID
    * @returns {Promise<Object>} Experience data
@@ -20,28 +33,13 @@ export const experienceApi = {
   },
 
   /**
-   * Get experiences associated with a specific AboutMe profile
-   * @param {number} aboutMeId - AboutMe profile ID
-   * @returns {Promise<Array>} List of experiences
-   */
-  getByAboutMeId: async (aboutMeId) => {
-    try {
-      return await apiRequest(`/api/experience/aboutme/${aboutMeId}`);
-    } catch (error) {
-      console.error(`Failed to fetch experiences for AboutMe ID ${aboutMeId}:`, error);
-      throw error;
-    }
-  },
-
-  /**
    * Create a new experience entry (admin only)
-   * @param {number} aboutMeId - AboutMe profile ID to associate with
    * @param {Object} experienceData - Experience data to create
    * @returns {Promise<Object>} Created experience
    */
-  create: async (aboutMeId, experienceData) => {
+  create: async (experienceData) => {
     try {
-      return await apiRequest(`/api/experience/aboutme/${aboutMeId}`, 'POST', experienceData, true);
+      return await apiRequest('/api/experience', 'POST', experienceData, true);
     } catch (error) {
       console.error('Failed to create experience:', error);
       throw error;
