@@ -1,7 +1,16 @@
-﻿using PortfolioWebApp.Server.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class Skill
+namespace PortfolioWebApp.Server.Models
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = null!;
+    public class Skill
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        
+        [Required]
+        [StringLength(100)]
+        public string Name { get; set; } = null!;
+    }
 }

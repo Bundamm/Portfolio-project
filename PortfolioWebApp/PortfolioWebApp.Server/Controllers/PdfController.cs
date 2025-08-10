@@ -52,11 +52,20 @@ public class PdfController : ControllerBase
             return NotFound("Project does not exist.");
         }
 
-        var pdfModel = pdfDto.ToPdfFromCreatePdfDto(projectId);
-        
-
-        await _pdfRepo.CreateAsync(pdfModel);
-        return CreatedAtAction(nameof(GetById), new { id = pdfModel.PdfId }, pdfModel.ToPdfDto());
+        try
+        {
+            var pdfModel = pdfDto.ToPdfFromCreatePdfDto(projectId);
+            await _pdfRepo.CreateAsync(pdfModel);
+            return CreatedAtAction(nameof(GetById), new { id = pdfModel.PdfId }, pdfModel.ToPdfDto());
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("already exists"))
+            {
+                return Conflict(ex.Message);
+            }
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPut("{id:int}")]
