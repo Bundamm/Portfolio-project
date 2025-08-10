@@ -95,15 +95,15 @@ function EditProjectDialog({ open, onOpenChange, data, onSave, onDelete, isNew =
         return;
       }
 
+      // Prepare data according to backend DTOs (PascalCase)
       const submitData = {
-        name: formData.name,
-        description: formData.description,
-        userId: 1 // TODO: Get actual user ID from admin context
+        Name: formData.name,
+        Description: formData.description
       };
 
-      // Add categoryId for update operations
+      // Add CategoryId for update operations (required by UpdateProjectDto)
       if (!isNew) {
-        submitData.categoryId = parseInt(formData.categoryId);
+        submitData.CategoryId = parseInt(formData.categoryId);
       }
 
       console.log('Submitting project data:', {
