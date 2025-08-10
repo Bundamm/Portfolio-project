@@ -32,7 +32,7 @@ function Projects() {
         setProjects(projectsData);
         setCategories(categoriesData || []);
       } catch (err) {
-        setError('Failed to load data. Please try again later.');
+        setError('Nie udało się załadować danych. Spróbuj ponownie później.');
         console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
@@ -99,7 +99,7 @@ function Projects() {
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="flex justify-between items-center mb-12">
-        <h1 className="text-3xl font-bold">My Projects</h1>
+        <h1 className="text-3xl font-bold">Moje Projekty</h1>
         <div className="flex items-center gap-4">
           {isAdmin && (
             <>
@@ -112,7 +112,7 @@ function Projects() {
                 className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
               >
                 <LogOut className="h-4 w-4" />
-                Admin Logout
+                Wyloguj się
               </Button>
             </>
           )}
@@ -179,7 +179,7 @@ function Projects() {
                         <div className="space-y-2">
                           <h4 className="text-sm font-semibold">{projectCategory.categoryName}</h4>
                           <p className="text-sm text-gray-600">
-                            {projectCategory.description || 'No description available'}
+                            {projectCategory.description || 'Brak dostępnego opisu'}
                           </p>
                         </div>
                       </HoverCardContent>
@@ -192,7 +192,7 @@ function Projects() {
                 <div className="flex justify-center">
                   <Button asChild>
                     <Link to={`/project/${project.id}`}>
-                      View Details
+                      Zobacz szczegóły
                     </Link>
                   </Button>
                 </div>

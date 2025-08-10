@@ -47,7 +47,7 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
 
     try {
       if (!formData.path.trim()) {
-        setError('Image URL is required');
+        setError('URL obrazka jest wymagany');
         return;
       }
 
@@ -70,7 +70,7 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
     } catch (err) {
       console.error('Image operation error:', err);
       
-      let errorMessage = `Failed to ${isNew ? 'create' : 'update'} image. Please try again.`;
+      let errorMessage = `Nie udało się ${isNew ? 'utworzyć' : 'zaktualizować'} obrazka. Spróbuj ponownie.`;
       if (err.message && err.message.includes('API Error')) {
         errorMessage = err.message;
       }
@@ -83,7 +83,7 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
 
   const handleDelete = async () => {
     const imageId = data?.id || data?.Id;
-    if (!imageId || !confirm('Are you sure you want to delete this image?')) return;
+    if (!imageId || !confirm('Czy na pewno chcesz usunąć ten obrazek?')) return;
 
     setLoading(true);
     setError('');
@@ -93,7 +93,7 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
       onDelete(imageId);
       onOpenChange(false);
     } catch (err) {
-      setError('Failed to delete image. Please try again.');
+      setError('Nie udało się usunąć obrazka. Spróbuj ponownie.');
       console.error('Delete error:', err);
     } finally {
       setLoading(false);
@@ -105,10 +105,10 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
-            {isNew ? 'Add New Image' : 'Edit Image'}
+            {isNew ? 'Dodaj nowy obrazek' : 'Edytuj obrazek'}
           </DialogTitle>
           <DialogDescription>
-            {isNew ? 'Add a new image to this project' : 'Update the image details'}
+            {isNew ? 'Dodaj nowy obrazek do tego projektu' : 'Zaktualizuj szczegóły obrazka'}
           </DialogDescription>
         </DialogHeader>
         
@@ -121,7 +121,7 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
 
           <div>
             <label htmlFor="path" className="block text-sm font-medium text-gray-700 mb-1">
-              Image URL *
+              URL obrazka *
             </label>
             <input
               id="path"
@@ -131,10 +131,10 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
               value={formData.path}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="https://example.com/image.jpg"
+              placeholder="https://przykład.com/obrazek.jpg"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Must be a valid URL pointing to an image file (jpg, jpeg, png, gif, webp)
+              Musi być prawidłowym URL-em wskazującym na plik obrazka (jpg, jpeg, png, gif, webp)
             </p>
           </div>
 
@@ -148,18 +148,18 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label htmlFor="isMain" className="ml-2 block text-sm text-gray-900">
-              Set as main image
+              Ustaw jako główny obrazek
             </label>
           </div>
 
           {/* Image preview */}
           {formData.path && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Podgląd</label>
               <div className="border border-gray-300 rounded-md p-2">
                 <img
                   src={formData.path}
-                  alt="Preview"
+                  alt="Podgląd"
                   className="w-full h-48 object-cover rounded"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -181,22 +181,22 @@ function EditImageDialog({ open, onOpenChange, data, projectId, onSave, onDelete
                   onClick={handleDelete}
                   disabled={loading}
                 >
-                  Delete
+                  Usuń
                 </Button>
               )}
             </div>
             <div className="flex gap-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                Anuluj
               </Button>
               <Button type="submit" disabled={loading}>
                 {loading ? (
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                    {isNew ? 'Creating...' : 'Saving...'}
+                    {isNew ? 'Tworzenie...' : 'Zapisywanie...'}
                   </div>
                 ) : (
-                  isNew ? 'Create Image' : 'Save Changes'
+                  isNew ? 'Utwórz obrazek' : 'Zapisz zmiany'
                 )}
               </Button>
             </div>

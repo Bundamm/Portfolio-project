@@ -40,7 +40,7 @@ function App() {
                         </Routes>
                     </main>
                     <footer className="p-4 border-t text-center text-sm text-gray-500">
-                        &copy; {new Date().getFullYear()} Your Portfolio
+                        &copy; {new Date().getFullYear()} Portfolio
                     </footer>
                 </div>
             </BrowserRouter>

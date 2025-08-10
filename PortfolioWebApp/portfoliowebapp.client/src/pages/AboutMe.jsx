@@ -176,7 +176,7 @@ function AboutMe() {
             className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
           >
             <LogOut className="h-4 w-4" />
-            Admin Logout
+            Wyloguj się
           </Button>
         )}
       </div>
@@ -197,16 +197,7 @@ function AboutMe() {
               ) : (
                 <>
                   <p className="mb-4">
-                    Witaj na mojej stronie portfolio! Jestem profesjonalnym programistą z pasją do
-                    tworzenia nowoczesnych i wydajnych aplikacji webowych.
-                  </p>
-                  <p className="mb-4">
-                    Specjalizuję się w technologiach takich jak React, .NET, i tworzeniu
-                    aplikacji full-stack.
-                  </p>
-                  <p>
-                    Zawsze dążę do pisania czystego, utrzymywalnego kodu i tworzenia
-                    aplikacji, które są nie tylko funkcjonalne, ale również przyjazne dla użytkownika.
+                    Niestety, nie udało się załadować informacji o mnie.
                   </p>
                 </>
               )}
@@ -281,14 +272,7 @@ function AboutMe() {
               ) : errors.skills ? (
                 <p className="text-red-600">{errors.skills}</p>
               ) : skills.length === 0 ? (
-                <div className="space-y-2">
-                  <Badge className="mr-2">React</Badge>
-                  <Badge className="mr-2">ASP.NET Core</Badge>
-                  <Badge className="mr-2">JavaScript</Badge>
-                  <Badge className="mr-2">TypeScript</Badge>
-                  <Badge className="mr-2">Tailwind CSS</Badge>
-                  <Badge className="mr-2">SQL Server</Badge>
-                </div>
+                <p className="text-red-600">Brak umiejętności</p>
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {skills.map((skill, index) => (

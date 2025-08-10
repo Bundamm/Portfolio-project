@@ -48,7 +48,7 @@ function Project() {
         setProject(projectData);
         setCategories(categoriesData || []);
       } catch (err) {
-        setError('Failed to load project details. Please try again later.');
+        setError('Nie udało się załadować szczegółów projektu. Spróbuj ponownie później.');
         console.error('Error fetching project:', err);
       } finally {
         setLoading(false);
@@ -134,10 +134,10 @@ function Project() {
   if (error || !project) {
     return (
       <div className="container mx-auto px-4 py-16">
-        <p className="text-red-500 text-center">{error || 'Project not found'}</p>
+        <p className="text-red-500 text-center">{error || 'Projekt nie został znaleziony'}</p>
         <div className="mt-6 text-center">
           <Button asChild variant="outline">
-            <Link to="/projects">Back to Projects</Link>
+            <Link to="/projects">Powrót do projektów</Link>
           </Button>
         </div>
       </div>
@@ -150,7 +150,7 @@ function Project() {
       <div className="mb-8">
         <Button asChild variant="ghost" className="flex items-center gap-2">
           <Link to="/projects">
-            <ChevronLeft className="h-5 w-5" /> Back to Projects
+            <ChevronLeft className="h-5 w-5" /> Powrót do projektów
           </Link>
         </Button>
       </div>
@@ -170,7 +170,7 @@ function Project() {
               size="sm"
             >
               <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Logout</span>
+              <span className="hidden sm:inline">Wyloguj się</span>
             </Button>
           </div>
         )}
@@ -191,7 +191,7 @@ function Project() {
                   <div className="space-y-2">
                     <h4 className="text-sm font-semibold">{projectCategory.categoryName}</h4>
                     <p className="text-sm text-gray-600">
-                      {projectCategory.description || 'No description available'}
+                      {projectCategory.description || 'Brak dostępnego opisu'}
                     </p>
                   </div>
                 </HoverCardContent>
@@ -213,10 +213,10 @@ function Project() {
       {/* Project images carousel */}
       <div className="mb-16">
         <div className="flex justify-center items-center gap-4 mb-6">
-          <h2 className="text-2xl font-bold">Project Images</h2>
+          <h2 className="text-2xl font-bold">Zdjęcia projektu</h2>
           {isAdmin && (
             <AddButton onClick={() => openEditImage()} size="sm">
-              Add Image
+              Dodaj zdjęcie
             </AddButton>
           )}
         </div>
@@ -247,7 +247,7 @@ function Project() {
                       />
                       {image.isMain && (
                         <div className="absolute bottom-3 left-3 bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
-                          Main Image
+                          Główne zdjęcie
                         </div>
                       )}
                     </div>
@@ -260,10 +260,10 @@ function Project() {
           </div>
         ) : (
           <div className="text-center text-gray-500 py-8">
-            <p>No images added yet</p>
+            <p>Nie dodano jeszcze żadnych zdjęć</p>
             {isAdmin && (
               <Button onClick={() => openEditImage()} className="mt-4">
-                Add First Image
+                Dodaj pierwsze zdjęcie
               </Button>
             )}
           </div>
@@ -273,10 +273,10 @@ function Project() {
       {/* Project PDFs carousel */}
       <div className="mb-16">
         <div className="flex justify-center items-center gap-4 mb-6">
-          <h2 className="text-2xl font-bold">Documentation</h2>
+          <h2 className="text-2xl font-bold">Dokumentacja</h2>
           {isAdmin && (
             <AddButton onClick={() => openEditPdf()} size="sm">
-              Add PDF
+              Dodaj PDF
             </AddButton>
           )}
         </div>
@@ -309,7 +309,7 @@ function Project() {
                             target="_blank" 
                             rel="noopener noreferrer"
                           >
-                            View PDF
+                            Zobacz PDF
                           </a>
                         </Button>
                       </div>
@@ -323,10 +323,10 @@ function Project() {
           </div>
         ) : (
           <div className="text-center text-gray-500 py-8">
-            <p>No PDFs added yet</p>
+            <p>Nie dodano jeszcze żadnych plików PDF</p>
             {isAdmin && (
               <Button onClick={() => openEditPdf()} className="mt-4">
-                Add First PDF
+                Dodaj pierwszy PDF
               </Button>
             )}
           </div>

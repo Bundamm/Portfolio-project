@@ -49,7 +49,7 @@ function EditAboutMeDialog({ open, onOpenChange, data, onSave }) {
       onSave(updatedData);
       onOpenChange(false);
     } catch (err) {
-      setError('Failed to update data. Please try again.');
+      setError('Nie udało się zaktualizować danych. Spróbuj ponownie.');
       console.error('Update error:', err);
     } finally {
       setLoading(false);
@@ -60,9 +60,9 @@ function EditAboutMeDialog({ open, onOpenChange, data, onSave }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Edit About Me</DialogTitle>
+          <DialogTitle>Edytuj "O mnie"</DialogTitle>
           <DialogDescription>
-            Update your profile information
+            Zaktualizuj informacje o swoim profilu
           </DialogDescription>
         </DialogHeader>
         
@@ -75,7 +75,7 @@ function EditAboutMeDialog({ open, onOpenChange, data, onSave }) {
 
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              Title
+              Tytuł
             </label>
             <input
               id="title"
@@ -90,7 +90,7 @@ function EditAboutMeDialog({ open, onOpenChange, data, onSave }) {
 
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-              Description
+              Opis
             </label>
             <textarea
               id="description"
@@ -99,7 +99,7 @@ function EditAboutMeDialog({ open, onOpenChange, data, onSave }) {
               value={formData.description}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter your description..."
+              placeholder="Wpisz swój opis..."
             />
           </div>
 
@@ -115,13 +115,13 @@ function EditAboutMeDialog({ open, onOpenChange, data, onSave }) {
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="your@email.com"
+                placeholder="twój@email.pl"
               />
             </div>
 
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                Phone
+                Telefon
               </label>
               <input
                 id="phone"
@@ -136,17 +136,17 @@ function EditAboutMeDialog({ open, onOpenChange, data, onSave }) {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
+                          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Anuluj
+              </Button>
             <Button type="submit" disabled={loading}>
               {loading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                  Saving...
+                                      Zapisywanie...
                 </div>
               ) : (
-                'Save Changes'
+                                  'Zapisz zmiany'
               )}
             </Button>
           </DialogFooter>

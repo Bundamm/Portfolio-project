@@ -70,7 +70,7 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
       onSave(result);
       onOpenChange(false);
     } catch (err) {
-      setError(`Failed to ${isNew ? 'create' : 'update'} experience. Please try again.`);
+      setError(`Nie udało się ${isNew ? 'utworzyć' : 'zaktualizować'} doświadczenia. Spróbuj ponownie.`);
       console.error('Experience operation error:', err);
     } finally {
       setLoading(false);
@@ -79,7 +79,7 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
 
   const handleDelete = async () => {
     const experienceId = data?.id || data?.Id;
-    if (!experienceId || !confirm('Are you sure you want to delete this experience?')) return;
+    if (!experienceId || !confirm('Czy na pewno chcesz usunąć to doświadczenie?')) return;
 
     setLoading(true);
     setError('');
@@ -89,7 +89,7 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
       onDelete(experienceId);
       onOpenChange(false);
     } catch (err) {
-      setError('Failed to delete experience. Please try again.');
+      setError('Nie udało się usunąć doświadczenia. Spróbuj ponownie.');
       console.error('Delete error:', err);
     } finally {
       setLoading(false);
@@ -101,10 +101,10 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
-            {isNew ? 'Add New Experience' : 'Edit Experience'}
+            {isNew ? 'Dodaj nowe doświadczenie' : 'Edytuj doświadczenie'}
           </DialogTitle>
           <DialogDescription>
-            {isNew ? 'Add a new work experience entry' : 'Update your work experience details'}
+            {isNew ? 'Dodaj nowy wpis doświadczenia zawodowego' : 'Zaktualizuj szczegóły swojego doświadczenia zawodowego'}
           </DialogDescription>
         </DialogHeader>
         
@@ -117,7 +117,7 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
 
           <div>
             <label htmlFor="workplace" className="block text-sm font-medium text-gray-700 mb-1">
-              Workplace *
+              Miejsce pracy *
             </label>
             <input
               id="workplace"
@@ -127,13 +127,13 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
               value={formData.workplace}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Company name"
+              placeholder="Nazwa firmy"
             />
           </div>
 
           <div>
             <label htmlFor="workDescription" className="block text-sm font-medium text-gray-700 mb-1">
-              Job Description *
+              Opis stanowiska *
             </label>
             <textarea
               id="workDescription"
@@ -143,14 +143,14 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
               value={formData.workDescription}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Describe your role and responsibilities..."
+              placeholder="Opisz swoją rolę i obowiązki..."
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
-                Start Date *
+                Data rozpoczęcia *
               </label>
               <input
                 id="startDate"
@@ -165,7 +165,7 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
 
             <div>
               <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-                End Date
+                Data zakończenia
               </label>
               <input
                 id="endDate"
@@ -175,7 +175,7 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
-              <p className="text-xs text-gray-500 mt-1">Leave empty for current position</p>
+              <p className="text-xs text-gray-500 mt-1">Zostaw puste dla obecnego stanowiska</p>
             </div>
           </div>
 
@@ -188,22 +188,22 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
                   onClick={handleDelete}
                   disabled={loading}
                 >
-                  Delete
+                  Usuń
                 </Button>
               )}
             </div>
             <div className="flex gap-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                Anuluj
               </Button>
               <Button type="submit" disabled={loading}>
                 {loading ? (
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                    {isNew ? 'Creating...' : 'Saving...'}
+                    {isNew ? 'Tworzenie...' : 'Zapisywanie...'}
                   </div>
                 ) : (
-                  isNew ? 'Create Experience' : 'Save Changes'
+                  isNew ? 'Utwórz doświadczenie' : 'Zapisz zmiany'
                 )}
               </Button>
             </div>

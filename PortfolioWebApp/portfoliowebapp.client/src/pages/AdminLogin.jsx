@@ -26,10 +26,10 @@ function AdminLogin() {
         login(token);
         navigate('/');
       } else {
-        throw new Error('No token received from server');
+        throw new Error('Brak tokenu z serwera');
       }
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      setError('Nieprawidłowe dane logowania. Spróbuj ponownie.');
     } finally {
       setLoading(false);
     }
@@ -47,9 +47,9 @@ function AdminLogin() {
       <div className="max-w-md w-full space-y-8">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
+            <CardTitle className="text-2xl font-bold">Logowanie administratora</CardTitle>
             <CardDescription>
-              Access admin panel to manage portfolio content
+              Uzyskaj dostęp do panelu administratora aby zarządzać zawartością portfolio
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -62,7 +62,7 @@ function AdminLogin() {
               
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                  Username
+                  Nazwa użytkownika
                 </label>
                 <input
                   id="username"
@@ -72,13 +72,13 @@ function AdminLogin() {
                   value={credentials.username}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your username"
+                  placeholder="Wpisz nazwę użytkownika"
                 />
               </div>
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
+                  Hasło
                 </label>
                 <input
                   id="password"
@@ -88,7 +88,7 @@ function AdminLogin() {
                   value={credentials.password}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your password"
+                  placeholder="Wpisz hasło"
                 />
               </div>
 
@@ -100,10 +100,10 @@ function AdminLogin() {
                 {loading ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                    Signing in...
+                    Logowanie...
                   </div>
                 ) : (
-                  'Sign In'
+                  'Zaloguj się'
                 )}
               </Button>
             </form>
