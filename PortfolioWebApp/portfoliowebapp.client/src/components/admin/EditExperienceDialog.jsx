@@ -23,10 +23,10 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
   useEffect(() => {
     if (data) {
       setFormData({
-        workplace: data.workplace || '',
-        workDescription: data.workDescription || '',
-        startDate: data.startDate ? data.startDate.split('T')[0] : '',
-        endDate: data.endDate ? data.endDate.split('T')[0] : ''
+        workplace: data.workplace || data.Workplace || '',
+        workDescription: data.workDescription || data.WorkDescription || '',
+        startDate: (data.startDate || data.StartDate) ? (data.startDate || data.StartDate).split('T')[0] : '',
+        endDate: (data.endDate || data.EndDate) ? (data.endDate || data.EndDate).split('T')[0] : ''
       });
     } else if (isNew) {
       setFormData({
@@ -52,17 +52,19 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
     setError('');
 
     try {
+      // Prepare data according to backend DTOs (PascalCase)
       const submitData = {
-        ...formData,
-        startDate: new Date(formData.startDate).toISOString(),
-        endDate: formData.endDate ? new Date(formData.endDate).toISOString() : null
+        Workplace: formData.workplace,
+        WorkDescription: formData.workDescription,
+        StartDate: new Date(formData.startDate).toISOString(),
+        EndDate: formData.endDate ? new Date(formData.endDate).toISOString() : null
       };
 
       let result;
       if (isNew) {
         result = await experienceApi.create(submitData);
       } else {
-        result = await experienceApi.update(data.id, submitData);
+        result = await experienceApi.update(data.id || data.Id, submitData);
       }
       
       onSave(result);
@@ -76,14 +78,15 @@ function EditExperienceDialog({ open, onOpenChange, data, onSave, onDelete, isNe
   };
 
   const handleDelete = async () => {
-    if (!data?.id || !confirm('Are you sure you want to delete this experience?')) return;
+    const experienceId = data?.id || data?.Id;
+    if (!experienceId || !confirm('Are you sure you want to delete this experience?')) return;
 
     setLoading(true);
     setError('');
 
     try {
-      await experienceApi.delete(data.id);
-      onDelete(data.id);
+      await experienceApi.delete(experienceId);
+      onDelete(experienceId);
       onOpenChange(false);
     } catch (err) {
       setError('Failed to delete experience. Please try again.');
