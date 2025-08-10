@@ -100,12 +100,8 @@ function AboutMe() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <h1 className="text-3xl font-bold mb-6">O mnie</h1>
-        <div className="flex items-center space-x-4">
-          <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <p>Ładowanie danych...</p>
-        </div>
+      <div className="container mx-auto px-4 py-16 flex justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -168,9 +164,8 @@ function AboutMe() {
           </h2>
           
           {loadingStates.experiences ? (
-            <div className="flex items-center space-x-4">
-              <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-              <p>Ładowanie doświadczenia...</p>
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           ) : errors.experiences ? (
             <p className="text-red-600">{errors.experiences}</p>
@@ -212,9 +207,8 @@ function AboutMe() {
             </CardHeader>
             <CardContent>
               {loadingStates.skills ? (
-                <div className="flex items-center space-x-4">
-                  <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                  <p>Ładowanie umiejętności...</p>
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : errors.skills ? (
                 <p className="text-red-600">{errors.skills}</p>
