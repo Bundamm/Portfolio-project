@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { projectsApi } from "../services/api";
+import { projectsApi, categoryApi } from "../services/api";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
@@ -7,11 +7,13 @@ import EditButton from '../components/admin/EditButton';
 import AddButton from '../components/admin/AddButton';
 import EditProjectDialog from '../components/admin/EditProjectDialog';
 import { useAdmin } from '../contexts/AdminContext';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../components/ui/hover-card';
 
 function Projects() {
   const { isAdmin, logout } = useAdmin();
   
   const [projects, setProjects] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,19 +23,23 @@ function Projects() {
   const [isNewProject, setIsNewProject] = useState(false);
   
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
       try {
-        const data = await projectsApi.getAll();
-        setProjects(data);
+        const [projectsData, categoriesData] = await Promise.all([
+          projectsApi.getAll(),
+          categoryApi.getAll()
+        ]);
+        setProjects(projectsData);
+        setCategories(categoriesData || []);
       } catch (err) {
-        setError('Failed to load projects. Please try again later.');
-        console.error('Error fetching projects:', err);
+        setError('Failed to load data. Please try again later.');
+        console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
       }
     };
     
-    fetchProjects();
+    fetchData();
   }, []);
 
   // Admin handlers
@@ -85,6 +91,11 @@ function Projects() {
     return null;
   };
 
+  // Helper function to get category data by category ID
+  const getCategoryById = (categoryId) => {
+    return categories.find(category => category.categoryId === categoryId);
+  };
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="flex justify-between items-center mb-12">
@@ -111,6 +122,7 @@ function Projects() {
       <div className="space-y-24">
         {projectsToDisplay.map((project, index) => {
           const mainImage = getMainImage(project);
+          const projectCategory = getCategoryById(project.categoryId);
           
           return (
             <div 
@@ -153,6 +165,28 @@ function Projects() {
                   />
                 )}
                 <h2 className="text-2xl font-bold mb-4">{project.name}</h2>
+                
+                {/* Category with Hover Card */}
+                {projectCategory && (
+                  <div className="mb-4">
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 cursor-help hover:bg-blue-200 transition-colors">
+                          {projectCategory.categoryName}
+                        </span>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">{projectCategory.categoryName}</h4>
+                          <p className="text-sm text-gray-600">
+                            {projectCategory.description || 'No description available'}
+                          </p>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                )}
+                
                 <p className="text-gray-700 mb-6">{project.description}</p>
                 
                 <div className="flex justify-center">

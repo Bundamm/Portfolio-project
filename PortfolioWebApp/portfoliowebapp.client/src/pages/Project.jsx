@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { projectsApi } from '../services/api';
+import { projectsApi, categoryApi } from '../services/api';
 import { Button } from '../components/ui/button';
 import { AspectRatio } from '../components/ui/aspect-ratio';
 import { 
@@ -14,6 +14,7 @@ import { ChevronLeft, FileText, LogOut } from 'lucide-react';
 import EditButton from '../components/admin/EditButton';
 import EditProjectDialog from '../components/admin/EditProjectDialog';
 import { useAdmin } from '../contexts/AdminContext';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../components/ui/hover-card';
 
 function Project() {
   const { id } = useParams();
@@ -21,6 +22,7 @@ function Project() {
   const { isAdmin, logout } = useAdmin();
   
   const [project, setProject] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -28,10 +30,14 @@ function Project() {
   const [editProjectOpen, setEditProjectOpen] = useState(false);
 
   useEffect(() => {
-    const fetchProject = async () => {
+    const fetchData = async () => {
       try {
-        const data = await projectsApi.getById(parseInt(id));
-        setProject(data);
+        const [projectData, categoriesData] = await Promise.all([
+          projectsApi.getById(parseInt(id)),
+          categoryApi.getAll()
+        ]);
+        setProject(projectData);
+        setCategories(categoriesData || []);
       } catch (err) {
         setError('Failed to load project details. Please try again later.');
         console.error('Error fetching project:', err);
@@ -41,7 +47,7 @@ function Project() {
     };
 
     if (id) {
-      fetchProject();
+      fetchData();
     }
   }, [id]);
 
@@ -53,6 +59,11 @@ function Project() {
   const handleProjectDelete = () => {
     // Navigate back to projects page after deletion from dialog
     navigate('/projects');
+  };
+
+  // Helper function to get category data by category ID
+  const getCategoryById = (categoryId) => {
+    return categories.find(category => category.categoryId === categoryId);
   };
 
   if (loading) {
@@ -107,6 +118,30 @@ function Project() {
           </div>
         )}
         <h1 className="text-4xl font-bold mb-6">{project.name}</h1>
+        
+        {/* Category with Hover Card */}
+        {(() => {
+          const projectCategory = getCategoryById(project.categoryId);
+          return projectCategory && (
+            <div className="mb-6 flex justify-center">
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <span className="inline-flex items-center px-4 py-2 rounded-full text-base font-medium bg-blue-100 text-blue-800 cursor-help hover:bg-blue-200 transition-colors">
+                    {projectCategory.categoryName}
+                  </span>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold">{projectCategory.categoryName}</h4>
+                    <p className="text-sm text-gray-600">
+                      {projectCategory.description || 'No description available'}
+                    </p>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </div>
+          );
+        })()}
         
         {/* Description in aspect ratio container */}
         <div className="rounded-lg border-2 border-gray-300 bg-gray-50 mb-8 overflow-hidden">
