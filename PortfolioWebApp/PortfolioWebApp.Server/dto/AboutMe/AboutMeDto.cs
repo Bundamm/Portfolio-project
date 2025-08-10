@@ -11,7 +11,5 @@ public class AboutMeDto
     public string? Phone { get; set; }
     public string? Email { get; set; }
 
-    public List<ExperienceDto> Experiences { get; set; } = new();
-    public List<SkillDto> Skills { get; set; } = new();
 
 }

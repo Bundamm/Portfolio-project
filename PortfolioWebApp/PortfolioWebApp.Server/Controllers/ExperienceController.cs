@@ -19,8 +19,13 @@ namespace PortfolioWebApp.Server.Controllers
             _experienceRepository = experienceRepository;
         }
 
-        [HttpGet("aboutme/{aboutMeId:int}")]
-
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var experiences = await _experienceRepository.GetAllAsync();
+            var dtoList = experiences.Select(e => e.ToExperienceDto());
+            return Ok(dtoList);
+        }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
@@ -31,9 +36,9 @@ namespace PortfolioWebApp.Server.Controllers
             return Ok(experience.ToExperienceDto());
         }
 
-        [HttpPost("aboutme/{aboutMeId:int}")]
+        [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create(int aboutMeId, [FromBody] CreateExperienceDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateExperienceDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

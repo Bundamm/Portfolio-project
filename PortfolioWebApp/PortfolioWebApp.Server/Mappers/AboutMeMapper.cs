@@ -16,17 +16,7 @@ namespace PortfolioWebApp.Server.Mappers
                 Description = aboutMe.Description,
                 Phone = aboutMe.PhoneNumber,
                 Email = aboutMe.Email,
-                Experiences = aboutMe.Experiences.Select(e => new ExperienceDto
-                {
-                    StartDate = e.StartDate,
-                    EndDate = e.EndDate,
-                    Workplace = e.Workplace,
-                    WorkDescription = e.WorkDescription
-                }).ToList(),
-                Skills = aboutMe.Skills.Select(s => new SkillDto
-                {
-                    Name = s.Name
-                }).ToList()
+
             };
         }
     }
