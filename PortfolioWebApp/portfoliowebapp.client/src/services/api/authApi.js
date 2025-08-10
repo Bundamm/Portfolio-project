@@ -12,17 +12,17 @@ export const authApi = {
    */
   login: async (username, password) => {
     try {
-      const loginData = { username, password };
+      const loginData = { Username: username, Password: password };
       const response = await apiRequest('/api/account/login', 'POST', loginData);
       
-      // Save token to local storage
-      if (response && response.token) {
-        setAuthToken(response.token);
+      // Save token to local storage - handle both uppercase and lowercase
+      const token = response && (response.Token || response.token);
+      if (token) {
+        setAuthToken(token);
       }
       
       return response;
     } catch (error) {
-      console.error('Login failed:', error);
       throw error;
     }
   },

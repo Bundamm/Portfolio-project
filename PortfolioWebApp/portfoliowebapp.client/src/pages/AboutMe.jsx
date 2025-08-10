@@ -2,9 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { aboutMeApi, skillsApi, experienceApi } from '../services/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, BriefcaseIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon, BriefcaseIcon, LogOut } from "lucide-react";
+import EditButton from '../components/admin/EditButton';
+import AddButton from '../components/admin/AddButton';
+import EditAboutMeDialog from '../components/admin/EditAboutMeDialog';
+import EditExperienceDialog from '../components/admin/EditExperienceDialog';
+import { useAdmin } from '../contexts/AdminContext';
 
 function AboutMe() {
+  const { isAdmin, logout } = useAdmin();
+  
   // State for different data sources
   const [aboutMeData, setAboutMeData] = useState({
     title: '',
@@ -26,6 +34,12 @@ function AboutMe() {
     skills: null,
     experiences: null
   });
+
+  // Admin dialog states
+  const [editAboutMeOpen, setEditAboutMeOpen] = useState(false);
+  const [editExperienceOpen, setEditExperienceOpen] = useState(false);
+  const [editingExperience, setEditingExperience] = useState(null);
+  const [isNewExperience, setIsNewExperience] = useState(false);
 
   // Helper to update loading state for a specific data type
   const setLoading = (type, isLoading) => {
@@ -95,6 +109,33 @@ function AboutMe() {
     });
   };
 
+  // Admin handlers
+  const handleAboutMeSave = (updatedData) => {
+    setAboutMeData(updatedData);
+  };
+
+  const handleExperienceSave = (savedExperience) => {
+    if (isNewExperience) {
+      setExperiences(prev => [...prev, savedExperience]);
+    } else {
+      setExperiences(prev => 
+        prev.map(exp => 
+          exp.id === savedExperience.id ? savedExperience : exp
+        )
+      );
+    }
+  };
+
+  const handleExperienceDelete = (deletedId) => {
+    setExperiences(prev => prev.filter(exp => exp.id !== deletedId));
+  };
+
+  const openEditExperience = (experience = null) => {
+    setEditingExperience(experience);
+    setIsNewExperience(!experience);
+    setEditExperienceOpen(true);
+  };
+
   // Check if all essential data is loading
   const isLoading = loadingStates.aboutMe;
 
@@ -126,14 +167,29 @@ function AboutMe() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-6">{aboutMeData.title || 'O mnie'}</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">{aboutMeData.title || 'O mnie'}</h1>
+        {isAdmin && (
+          <Button 
+            variant="outline" 
+            onClick={logout}
+            className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
+          >
+            <LogOut className="h-4 w-4" />
+            Admin Logout
+          </Button>
+        )}
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content - about me description */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>O mnie</CardTitle>
+              <div className="flex justify-between items-center">
+                <CardTitle>O mnie</CardTitle>
+                <EditButton onClick={() => setEditAboutMeOpen(true)} size="sm" />
+              </div>
             </CardHeader>
             <CardContent>
               {aboutMeData.description ? (
@@ -158,10 +214,16 @@ function AboutMe() {
           </Card>
 
           {/* Experience section */}
-          <h2 className="text-2xl font-bold mt-10 mb-6 flex items-center">
-            <BriefcaseIcon className="mr-2" size={24} />
-            Doświadczenie
-          </h2>
+          <div className="flex justify-between items-center mt-10 mb-6">
+            <h2 className="text-2xl font-bold flex items-center">
+              <BriefcaseIcon className="mr-2" size={24} />
+              Doświadczenie
+            </h2>
+            <AddButton
+              onClick={() => openEditExperience()}
+              size="sm"
+            />
+          </div>
           
           {loadingStates.experiences ? (
             <div className="flex justify-center py-8">
@@ -175,7 +237,13 @@ function AboutMe() {
             <div className="space-y-6">
               {sortedExperiences.map((exp, index) => (
                 <Card key={`${exp.workplace}-${exp.startDate}-${index}`}>
-                  <CardHeader className="text-center">
+                  <CardHeader className="text-center relative">
+                    <EditButton 
+                      onClick={() => openEditExperience(exp)}
+                      className="absolute top-4 right-4"
+                      size="icon"
+                      showText={false}
+                    />
                     <div className="flex flex-col items-center gap-2">
                       <CardTitle className="text-xl font-semibold">{exp.workplace}</CardTitle>
                       <div className="flex items-center gap-2">
@@ -261,6 +329,23 @@ function AboutMe() {
           )}
         </div>
       </div>
+
+      {/* Admin Dialogs */}
+      <EditAboutMeDialog
+        open={editAboutMeOpen}
+        onOpenChange={setEditAboutMeOpen}
+        data={aboutMeData}
+        onSave={handleAboutMeSave}
+      />
+
+      <EditExperienceDialog
+        open={editExperienceOpen}
+        onOpenChange={setEditExperienceOpen}
+        data={editingExperience}
+        isNew={isNewExperience}
+        onSave={handleExperienceSave}
+        onDelete={handleExperienceDelete}
+      />
     </div>
   );
 }
