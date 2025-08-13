@@ -86,6 +86,12 @@ function Projects() {
   // Helper function to get the first image from a project or return null
   const getMainImage = (project) => {
     if (project.images && project.images.length > 0) {
+      // First, try to find an image marked as main
+      const mainImage = project.images.find(image => image.isMain);
+      if (mainImage) {
+        return mainImage.path;
+      }
+      // If no main image is found, fallback to the first image
       return project.images[0].path;
     }
     return null;
