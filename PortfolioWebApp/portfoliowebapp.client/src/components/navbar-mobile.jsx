@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { projectsApi } from "../services/api";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import ThemeToggle from "./ThemeToggle";
 
 /**
  * Mobile navbar component with a hamburger menu that opens a drawer
@@ -59,14 +60,17 @@ function NavbarMobile() {
             Portfolio
           </Link>
           
-          {/* Hamburger button */}
-          <button 
-            onClick={() => setIsOpen(!isOpen)} 
-            className="p-2 rounded-md hover:bg-accent/50 transition-colors duration-200"
-            aria-label="Toggle menu"
-          >
-            <Menu className="size-5" />
-          </button>
+          {/* Theme toggle and hamburger button */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="p-2 rounded-md hover:bg-accent/50 transition-colors duration-200"
+              aria-label="Toggle menu"
+            >
+              <Menu className="size-5" />
+            </button>
+          </div>
         </div>
       </div>
 

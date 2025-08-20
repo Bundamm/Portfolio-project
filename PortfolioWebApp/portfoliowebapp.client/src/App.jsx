@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/navbar';
 import NavbarMobile from '@/components/navbar-mobile';
+import Footer from '@/components/Footer';
 import AboutMe from '@/pages/AboutMe';
 import Projects from '@/pages/Projects';
 import Project from '@/pages/Project';
@@ -39,9 +40,7 @@ function App() {
                             <Route path="/secret-admin-portal" element={<AdminLogin />} />
                         </Routes>
                     </main>
-                    <footer className="p-4 border-t text-center text-sm text-gray-500">
-                        &copy; {new Date().getFullYear()} Portfolio
-                    </footer>
+                    <Footer />
                 </div>
             </BrowserRouter>
         </AdminProvider>

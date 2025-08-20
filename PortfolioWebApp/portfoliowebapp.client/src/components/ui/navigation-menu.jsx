@@ -5,6 +5,7 @@ import { ChevronDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Link } from "react-router-dom"
+import ThemeToggle from "../ThemeToggle"
 
 function NavigationMenu({
   className,
@@ -39,9 +40,9 @@ function NavigationMenu({
             {children}
           </div>
           
-          {/* Right side - Empty or additional controls */}
+          {/* Right side - Theme toggle */}
           <div className="w-1/4 flex justify-end">
-            {/* Empty space for layout balance */}
+            <ThemeToggle />
           </div>
         </div>
       </div>

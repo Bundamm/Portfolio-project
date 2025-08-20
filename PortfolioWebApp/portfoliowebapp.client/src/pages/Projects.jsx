@@ -6,6 +6,7 @@ import { LogOut } from "lucide-react";
 import EditButton from '../components/admin/EditButton';
 import AddButton from '../components/admin/AddButton';
 import EditProjectDialog from '../components/admin/EditProjectDialog';
+import CategoryManagementDialog from '../components/admin/CategoryManagementDialog';
 import { useAdmin } from '../contexts/AdminContext';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../components/ui/hover-card';
 
@@ -21,6 +22,7 @@ function Projects() {
   const [editProjectOpen, setEditProjectOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [isNewProject, setIsNewProject] = useState(false);
+  const [categoryManagementOpen, setCategoryManagementOpen] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +65,15 @@ function Projects() {
     setEditingProject(project);
     setIsNewProject(!project);
     setEditProjectOpen(true);
+  };
+
+  const handleCategoriesUpdate = async () => {
+    try {
+      const categoriesData = await categoryApi.getAll();
+      setCategories(categoriesData || []);
+    } catch (err) {
+      console.error('Error refreshing categories:', err);
+    }
   };
 
   if (loading) {
@@ -112,6 +123,13 @@ function Projects() {
               <AddButton onClick={() => openEditProject()} size="sm">
                 Dodaj Projekt
               </AddButton>
+              <Button 
+                variant="secondary" 
+                onClick={() => setCategoryManagementOpen(true)}
+                size="sm"
+              >
+                Zarządzaj kategoriami
+              </Button>
               <Button 
                 variant="outline" 
                 onClick={logout}
@@ -208,7 +226,7 @@ function Projects() {
         })}
       </div>
 
-      {/* Admin Dialog */}
+      {/* Admin Dialogs */}
       <EditProjectDialog
         open={editProjectOpen}
         onOpenChange={setEditProjectOpen}
@@ -216,6 +234,12 @@ function Projects() {
         isNew={isNewProject}
         onSave={handleProjectSave}
         onDelete={handleProjectDelete}
+      />
+      
+      <CategoryManagementDialog
+        open={categoryManagementOpen}
+        onOpenChange={setCategoryManagementOpen}
+        onCategoriesUpdate={handleCategoriesUpdate}
       />
     </div>
   );
